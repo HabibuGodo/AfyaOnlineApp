@@ -12,7 +12,7 @@ class AppSpinner extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Center(
           child: SpinKitPulse(
-            color: AppTheme.reconSpotTheme.primaryColor,
+            color: AppTheme.communityTBTheme.primaryColor,
             size: 80,
           ),
         ));

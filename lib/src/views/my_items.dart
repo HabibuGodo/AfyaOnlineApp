@@ -565,7 +565,7 @@ class _SingleBedState extends State<SingleBed> {
   @override
   void initState() {
     super.initState();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
   }
 
   @override
@@ -610,7 +610,7 @@ class _SingleBathState extends State<SingleBath> {
   @override
   void initState() {
     super.initState();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
   }
 
   @override

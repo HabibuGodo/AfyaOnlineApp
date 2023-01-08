@@ -80,11 +80,11 @@ class AppTheme {
   );
 
   // Change
-  static ThemeData reconSpotTheme = AppTheme.themeType == ThemeType.light
-      ? reconSpotLightTheme
-      : reconSpotDarkTheme;
+  static ThemeData communityTBTheme = AppTheme.themeType == ThemeType.light
+      ? communityTBLightTheme
+      : communityTBDarkTheme;
 
-  static ThemeData reconSpotLightTheme = createTheme(
+  static ThemeData communityTBLightTheme = createTheme(
     ColorScheme.fromSeed(
         seedColor: Color(0xff3d698d),
         primaryContainer: Color(0xffdafafa),
@@ -93,7 +93,7 @@ class AppTheme {
         secondaryContainer: Color(0xfff8d6d6),
         onSecondaryContainer: Color(0xff570202)),
   );
-  static ThemeData reconSpotDarkTheme = createTheme(
+  static ThemeData communityTBDarkTheme = createTheme(
     ColorScheme.fromSeed(
         seedColor: Color(0xffcaffff),
         primary: Color(0xffcaffff),
@@ -497,9 +497,9 @@ class AppTheme {
   static resetThemeData() {
     nftTheme = getNFTTheme();
 
-    reconSpotTheme = AppTheme.themeType == ThemeType.light
-        ? reconSpotLightTheme
-        : reconSpotDarkTheme;
+    communityTBTheme = AppTheme.themeType == ThemeType.light
+        ? communityTBLightTheme
+        : communityTBDarkTheme;
 
     shoppingTheme = AppTheme.themeType == ThemeType.light
         ? shoppingLightTheme

@@ -26,7 +26,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     getItems();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
     itemCategoriesList();
     super.onInit();
   }

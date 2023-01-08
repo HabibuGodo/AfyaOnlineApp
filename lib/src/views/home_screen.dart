@@ -286,6 +286,22 @@ class HomeScreen extends GetView<HomeController> {
               ],
             ),
           ),
+          // floating action button
+          floatingActionButton: authData.read("role") == 2
+              ? Container()
+              : FloatingActionButton(
+                  onPressed: () {
+                    // Get.to(() => Chat(),
+                    //     transition: Transition.rightToLeftWithFade);
+
+                    Get.toNamed('/add_item');
+                  },
+                  backgroundColor: controller.theme.colorScheme.primary,
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                ),
         ),
       ),
     );
@@ -359,7 +375,7 @@ class HomeScreen extends GetView<HomeController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 FxText.bodyLarge(
-                  'Recommended',
+                  'News Feeds',
                   fontWeight: 600,
                 ),
                 // FxText.bodySmall(
@@ -388,174 +404,6 @@ class HomeScreen extends GetView<HomeController> {
       );
     }
   }
-
-  void _selectSizeSheet(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext buildContext) {
-          return StatefulBuilder(
-            builder: (BuildContext context,
-                void Function(void Function()) setState) {
-              return FxContainer(
-                padding: FxSpacing.top(24),
-                child: ListView(
-                  children: <Widget>[
-                    Padding(
-                      padding: FxSpacing.horizontal(24),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          FxContainer.rounded(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            paddingAll: 6,
-                            color: controller.theme.colorScheme.secondary,
-                            child: Icon(
-                              Icons.close,
-                              size: 16,
-                              color: controller
-                                  .theme.colorScheme.secondaryContainer,
-                            ),
-                          ),
-                          FxText.bodyMedium(
-                            'Filters',
-                            fontWeight: 600,
-                          ),
-                          FxText.bodySmall(
-                            'Reset',
-                            color: controller.theme.colorScheme.primary,
-                          ),
-                        ],
-                      ),
-                    ),
-                    FxSpacing.height(8),
-                    Padding(
-                      padding: FxSpacing.horizontal(24),
-                      child: FxText.bodyMedium(
-                        'Category',
-                        fontWeight: 700,
-                      ),
-                    ),
-                    FxSpacing.height(8),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: _buildFilterCategoryList(),
-                      ),
-                    ),
-                    FxSpacing.height(16),
-                    Padding(
-                      padding: FxSpacing.horizontal(24),
-                      child: FxText.bodyMedium(
-                        'Price Range ( ' +
-                            '${controller.selectedRange.value.toString()} - ' +
-                            '${controller.selectedRange.value.toString()} )',
-                        fontWeight: 700,
-                      ),
-                    ),
-                    RangeSlider(
-                        activeColor: controller.theme.colorScheme.primary,
-                        inactiveColor:
-                            controller.theme.colorScheme.primary.withAlpha(100),
-                        max: 10000,
-                        min: 0,
-                        values: controller.selectedRange.value,
-                        onChanged: (RangeValues newRange) {
-                          setState(
-                              () => controller.selectedRange.value = newRange);
-                        }),
-                    Padding(
-                      padding: FxSpacing.horizontal(24),
-                      child: FxText.bodyMedium(
-                        'Bed Rooms',
-                        fontWeight: 700,
-                      ),
-                    ),
-                    // FxSpacing.height(8),
-                    // SingleChildScrollView(
-                    //   padding: FxSpacing.x(24),
-                    //   scrollDirection: Axis.horizontal,
-                    //   child: Row(
-                    //       children:
-                    //           ['Any', '1', '2', '3', '4', '5'].map((element) {
-                    //     return InkWell(
-                    //         onTap: () {
-                    //           setState(() {
-                    //             if (controller.selectedBedRooms
-                    //                 .contains(element)) {
-                    //               controller.selectedBedRooms.remove(element);
-                    //             } else {
-                    //               controller.selectedBedRooms.add(element);
-                    //             }
-                    //           });
-                    //         },
-                    //         child: SingleBed(
-                    //           bed: element,
-                    //           selected:
-                    //               controller.selectedBedRooms.contains(element),
-                    //         ));
-                    //   }).toList()),
-                    // ),
-                    FxSpacing.height(16),
-                    // Padding(
-                    //   padding: FxSpacing.horizontal(24),
-                    //   child: FxText.bodyMedium(
-                    //     'Bath Rooms',
-                    //     fontWeight: 700,
-                    //   ),
-                    // ),
-                    // FxSpacing.height(8),
-                    // SingleChildScrollView(
-                    //   padding: FxSpacing.x(24),
-                    //   scrollDirection: Axis.horizontal,
-                    //   child: Row(
-                    //       children:
-                    //           ['Any', '1', '2', '3', '4', '5'].map((element) {
-                    //     return InkWell(
-                    //         onTap: () {
-                    //           setState(() {
-                    //             if (controller.selectedBathRooms
-                    //                 .contains(element)) {
-                    //               controller.selectedBathRooms.remove(element);
-                    //             } else {
-                    //               controller.selectedBathRooms.add(element);
-                    //             }
-                    //           });
-                    //         },
-                    //         child: SingleBath(
-                    //           bath: element,
-                    //           selected: controller.selectedBathRooms
-                    //               .contains(element),
-                    //         ));
-                    //   }).toList()),
-                    // ),
-                    FxSpacing.height(16),
-                    Padding(
-                      padding: FxSpacing.horizontal(24),
-                      child: FxButton.block(
-                        borderRadiusAll: 8,
-                        elevation: 0,
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        backgroundColor: controller.theme.colorScheme.primary,
-                        child: FxText.titleSmall(
-                          "Apply Filters",
-                          fontWeight: 700,
-                          color: controller.theme.colorScheme.onPrimary,
-                          letterSpacing: 0.4,
-                        ),
-                      ),
-                    ),
-                    FxSpacing.height(16),
-                  ],
-                ),
-              );
-            },
-          );
-        });
-  }
 }
 
 class SingleBed extends StatefulWidget {
@@ -575,7 +423,7 @@ class _SingleBedState extends State<SingleBed> {
   @override
   void initState() {
     super.initState();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
   }
 
   @override
@@ -620,7 +468,7 @@ class _SingleBathState extends State<SingleBath> {
   @override
   void initState() {
     super.initState();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
   }
 
   @override

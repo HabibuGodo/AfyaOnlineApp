@@ -37,7 +37,7 @@ class LoginOTP extends GetView<LoginOTPController> {
                           ),
                           FxSpacing.height(8),
                           Text(
-                              'Enter OTP Code sent in +${controller.phone} now!',
+                              'Enter OTP Code sent in ${controller.phone} now!',
                               textAlign: TextAlign.center),
                           FxSpacing.height(8),
                           _otpTextArea(context),

@@ -64,11 +64,11 @@ class LoginScreen extends GetView<LogInController> {
                               fillColor: controller.theme.primaryColor
                                   .withOpacity(0.4),
                               prefixIcon: Icon(
-                                FeatherIcons.phone,
+                                FeatherIcons.user,
                                 color:
                                     controller.theme.colorScheme.onBackground,
                               ),
-                              hintText: "MRN",
+                              hintText: "Enter MRN",
                               enabledBorder: controller.outlineInputBorder,
                               focusedBorder: controller.outlineInputBorder,
                               border: controller.outlineInputBorder,
@@ -76,14 +76,11 @@ class LoginScreen extends GetView<LogInController> {
                               hintStyle: FxTextStyle.bodyMedium(),
                               isCollapsed: true),
                           maxLines: 1,
-                          maxLength: 10,
                           keyboardType: TextInputType.text,
                           controller: controller.mrnController,
-                          validator: (value) =>
-                              controller.validatePhoneNo(value),
+                          validator: (value) => controller.validateMRN(value),
                           onSaved: (value) {
-                            controller.mrnNumber.value =
-                                value.toString().replaceFirst("0", "255");
+                            controller.mrnNumber.value = value!;
                           },
                           cursorColor: controller.theme.colorScheme.onPrimary,
                         ),
@@ -91,7 +88,7 @@ class LoginScreen extends GetView<LogInController> {
                     ),
                   ),
                 ),
-                FxSpacing.height(10),
+                FxSpacing.height(20),
                 FxButton.block(
                   elevation: 0,
                   borderRadiusAll: Constant.buttonRadius.large,

@@ -14,16 +14,15 @@ import 'profile_screen.dart';
 class Dashboard extends GetView<DashboardController> {
   Dashboard({Key? key});
 
-
   Widget _widgetOptions(int index) {
     switch (controller.currentIndex.value) {
       case 0:
         // return Get.toNamed('/home');
         return HomeScreen();
+      // case 1:
+      //   return authData.read('role') == "Dalali" ? MyItems() : MyFavorite();
       case 1:
-        return authData.read('role') == "Dalali" ? MyItems() : MyFavorite();
-      // case 2:
-      //   return ChatScreen();
+        return ChatScreen();
       case 2:
         return ProfileScreen();
       default:
@@ -41,22 +40,22 @@ class Dashboard extends GetView<DashboardController> {
               backgroundColor: Colors.white,
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
+                  icon: Icon(Icons.feed),
+                  label: 'Feeds',
                 ),
-                authData.read('role') == "Dalali"
-                    ? BottomNavigationBarItem(
-                        icon: Icon(Icons.aod_rounded),
-                        label: 'My Items',
-                      )
-                    : BottomNavigationBarItem(
-                        icon: Icon(Icons.favorite),
-                        label: 'My Favorite',
-                      ),
-                // BottomNavigationBarItem(
-                //   icon: Icon(Icons.chat),
-                //   label: 'Chat',
-                // ),
+                // authData.read('role') == "Dalali"
+                //     ? BottomNavigationBarItem(
+                //         icon: Icon(Icons.aod_rounded),
+                //         label: 'My Items',
+                //       )
+                //     : BottomNavigationBarItem(
+                //         icon: Icon(Icons.favorite),
+                //         label: 'My Favorite',
+                //       ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.chat),
+                  label: 'Chat',
+                ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person),
                   label: 'Profile',

@@ -18,7 +18,7 @@ class DashboardController extends GetxController {
     super.onInit();
     // getbanners();
     EasyLoading.dismiss();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
 
     //
   }

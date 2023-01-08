@@ -29,7 +29,7 @@ class MyItemController extends GetxController {
   void onInit() {
     EasyLoading.dismiss();
     getItems();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
 
     super.onInit();
   }

@@ -78,7 +78,7 @@ class AddItemController extends GetxController {
     streetTE = TextEditingController();
     descriptionTE = TextEditingController();
     priceTE = TextEditingController();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
     outlineInputBorder = OutlineInputBorder(
       borderRadius:
           BorderRadius.all(Radius.circular(Constant.textFieldRadius.medium)),

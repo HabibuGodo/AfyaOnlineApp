@@ -15,7 +15,7 @@ class SingleChatController extends GetxController {
   void onInit() {
     fetchData();
     chat = Get.arguments['chat'];
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
 
     super.onInit();
   }

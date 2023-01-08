@@ -23,7 +23,7 @@ class SingleAgentController extends GetxController {
 
   @override
   void onInit() {
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
     fetchData();
     super.onInit();
   }

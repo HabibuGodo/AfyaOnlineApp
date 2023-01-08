@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     controller = FxControllerStore.putOrFind(ProfileController());
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
   }
 
   Widget _buildSingleRow({String? title, IconData? icon}) {
@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (title == 'Share App') {
           //Share app link
           String link =
-              'https://play.google.com/store/apps/details?id=tz.co.reaconspots';
+              'https://play.google.com/store/apps/details?id=community.tb';
 
           await FlutterShare.share(
             title: 'ReconSpots',

@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutkit/src/services/local_storage.dart';
+import 'package:flutkit/theme/theme_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get/get.dart';
 import 'dart:convert' as convert;
 
-import '../../animations/auth/teddy_controller.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/constant.dart';
 import '../services/base_service.dart';
@@ -18,17 +22,16 @@ class LogInController extends GetxController {
   final loginFormKey = GlobalKey<FormState>().obs;
 
   late TextEditingController mrnController;
-  late TeddyController teddyController;
   late ThemeData theme;
   late OutlineInputBorder outlineInputBorder;
   var mrnNumber = ''.obs;
+  var checkDataConnection = "".obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
     mrnController = TextEditingController();
-    theme = AppTheme.reconSpotTheme;
-    teddyController = TeddyController();
+    theme = AppTheme.communityTBTheme;
     outlineInputBorder = OutlineInputBorder(
       borderRadius:
           BorderRadius.all(Radius.circular(Constant.textFieldRadius.medium)),
@@ -72,56 +75,63 @@ class LogInController extends GetxController {
   //   }
   // }
 
-  String? validatePhoneNo(String? value) {
-    Pattern pattern = r"^[0-9]{10,10}$";
-    RegExp regex = RegExp(pattern.toString());
+  String? validateMRN(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please provide your phone number.';
-    } else if (value.length < 10) {
-      return 'Phone number must not be less than 10 digits.';
-    } else {
-      if (!regex.hasMatch(value)) {
-        return 'Please enter a valid phone number';
-      } else {
-        if ((value.startsWith("0", 0) && value.startsWith("6", 1)) ||
-            (value.startsWith("0", 0) && value.startsWith("7", 1)) &&
-                value.length == 10) {
-          return null;
-        } else {
-          return 'Please enter a valid phone number';
-        }
-      }
+      return 'Please provide your MRN.';
     }
+    return null;
   }
 
   // Submit Form
-  void checkValidation() {
+  void checkValidation() async {
     final isValid = loginFormKey.value.currentState!.validate();
     if (!isValid) {
       print('Form has Errors....');
     } else {
       loginFormKey.value.currentState!.save();
-      authData.write('mrnNumber', mrnNumber.value);
-      sendOTP();
+
+      var result = await Connectivity().checkConnectivity();
+
+      if (result == ConnectivityResult.none) {
+        // EasyLoading.showError('No internet connection.');
+        checkDataConnection.value = "No internet connection.";
+        EasyLoading.showError(checkDataConnection.value);
+      } else {
+        bool result = await DataConnectionChecker().hasConnection;
+
+        if (result == true) {
+          await sendOTP();
+        } else {
+          EasyLoading.showError(checkDataConnection.value);
+          checkDataConnection.value = "No internet connection.";
+        }
+      }
     }
   }
 
   // Call API to Posts phone number
+
   Future<void> sendOTP() async {
     EasyLoading.show(
       status: 'Please wait...',
       maskType: EasyLoadingMaskType.black,
     );
+
     try {
-      final response = await http.post(
-        Uri.parse(baseURL + '/login'),
+      var response = await http.post(
+        Uri.parse(baseURL + '/send_otp'),
         body: {
-          'username': mrnNumber.value,
+          'mrn': mrnNumber.value,
         },
       );
 
-      // check response if has errorr
-      if (response.body.contains('Invalid user')) {
+      log(response.body.toString());
+
+      if (response.body.contains('success')) {
+        var jsonResponse = convert.jsonDecode(response.body);
+
+        Get.toNamed('/login_otp', arguments: {'phone': jsonResponse['phone']});
+      } else {
         EasyLoading.dismiss();
 
         await ArtSweetAlert.show(
@@ -132,19 +142,24 @@ class LogInController extends GetxController {
                 // denyButtonColor: Colors.red,
                 confirmButtonColor: theme.colorScheme.primary,
                 title: 'Login Failed',
-                text: "The user does not exist, please register",
+                text: "The user does not exist",
                 confirmButtonText: "Go back",
                 type: ArtSweetAlertType.danger));
-      } else {
-        if (response.statusCode == 200) {
-          var jsonResponse = convert.jsonDecode(response.body);
-
-          Get.toNamed('/login_otp',
-              arguments: {'id': jsonResponse['user']['id']});
-        }
       }
     } catch (e) {
       print(e);
+      EasyLoading.dismiss();
+      await ArtSweetAlert.show(
+          barrierDismissible: false,
+          context: Get.context!,
+          artDialogArgs: ArtDialogArgs(
+              // denyButtonText: "Go back",
+              // denyButtonColor: Colors.red,
+              confirmButtonColor: theme.colorScheme.primary,
+              title: 'Login Failed',
+              text: e.toString(),
+              confirmButtonText: "Go back",
+              type: ArtSweetAlertType.danger));
     } finally {
       EasyLoading.dismiss();
     }

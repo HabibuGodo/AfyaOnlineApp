@@ -1,4 +1,5 @@
 import 'package:flutkit/loading_effect.dart';
+import 'package:flutkit/src/models/group_model.dart';
 import 'package:flutkit/theme/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -16,85 +17,90 @@ class ChatScreen extends GetView<ChatController> {
 
     list.add(FxSpacing.width(16));
 
-    for (Chat chat in controller.chats) {
-      list.add(_buildSingleChat(chat));
+    for (GroupModel group in controller.groups) {
+      list.add(_buildSingleChat(group));
     }
     return list;
   }
 
-  Widget _buildSingleChat(Chat chat) {
+  Widget _buildSingleChat(GroupModel group) {
     return FxContainer(
       onTap: () {
-        Get.toNamed('/single_chat', arguments: {'chat': chat});
+        Get.toNamed('/single_chat', arguments: {'groupId': group.id});
       },
       margin: FxSpacing.bottom(16),
       paddingAll: 16,
       borderRadiusAll: Constant.containerRadius.medium,
       child: Row(
         children: [
-          Stack(
-            children: [
-              FxContainer.rounded(
-                paddingAll: 0,
-                child: Image(
-                  height: 54,
-                  width: 54,
-                  image: AssetImage(chat.image),
-                ),
-              ),
-              Positioned(
-                right: 4,
-                bottom: 2,
-                child: FxContainer.rounded(
-                  paddingAll: 5,
-                  child: Container(),
-                  color: Colors.green,
-                ),
-              )
-            ],
-          ),
+          // Stack(
+          //   children: [
+          //     FxContainer.rounded(
+          //         paddingAll: 0,
+          //         child: Image(
+          //           height: 54,
+          //           width: 54,
+          //           image: group.profileImage!.isEmpty
+          //               ? AssetImage("assets/images/apps/estate/estate7.jpg")
+          //                   as ImageProvider
+          //               : //network image with host
+
+          //               NetworkImage("${group.profileImage!}"),
+          //           fit: BoxFit.fitWidth,
+          //         )),
+          //     Positioned(
+          //       right: 4,
+          //       bottom: 2,
+          //       child: FxContainer.rounded(
+          //         paddingAll: 5,
+          //         child: Container(),
+          //         color: Colors.green,
+          //       ),
+          //     )
+          //   ],
+          // ),
           FxSpacing.width(16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 FxText.bodyMedium(
-                  chat.name,
+                  group.groupName!,
                   fontWeight: 600,
                 ),
                 FxSpacing.height(4),
-                FxText.bodySmall(
-                  chat.chat,
-                  xMuted: chat.replied,
-                  muted: !chat.replied,
-                  fontWeight: chat.replied ? 400 : 600,
-                ),
+                // FxText.bodySmall(
+                //   chat.chat,
+                //   xMuted: chat.replied,
+                //   muted: !chat.replied,
+                //   fontWeight: chat.replied ? 400 : 600,
+                // ),
               ],
             ),
           ),
           FxSpacing.width(8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              FxText.bodySmall(
-                chat.time,
-                fontSize: 10,
-                color: controller.theme.colorScheme.onBackground,
-                xMuted: true,
-              ),
-              chat.replied
-                  ? FxSpacing.height(16)
-                  : FxContainer.rounded(
-                      paddingAll: 6,
-                      color: controller.theme.colorScheme.primary,
-                      child: FxText.bodySmall(
-                        chat.messages,
-                        fontSize: 10,
-                        color: controller.theme.colorScheme.onPrimary,
-                      ),
-                    ),
-            ],
-          ),
+          // Column(
+          //   crossAxisAlignment: CrossAxisAlignment.end,
+          //   children: [
+          //     FxText.bodySmall(
+          //       chat.time,
+          //       fontSize: 10,
+          //       color: controller.theme.colorScheme.onBackground,
+          //       xMuted: true,
+          //     ),
+          //     chat.replied
+          //         ? FxSpacing.height(16)
+          //         : FxContainer.rounded(
+          //             paddingAll: 6,
+          //             color: controller.theme.colorScheme.primary,
+          //             child: FxText.bodySmall(
+          //               chat.messages,
+          //               fontSize: 10,
+          //               color: controller.theme.colorScheme.onPrimary,
+          //             ),
+          //           ),
+          //   ],
+          // ),
         ],
       ),
     );
@@ -154,11 +160,11 @@ class ChatScreen extends GetView<ChatController> {
           FxSpacing.height(16),
           FxTextField(
             textFieldStyle: FxTextFieldStyle.outlined,
-            labelText: 'Search your agent...',
+            labelText: 'Search Group...',
             focusedBorderColor: controller.theme.colorScheme.primary,
             enabledBorderRadius: Constant.containerRadius.medium,
             focusedBorderRadius: Constant.containerRadius.medium,
-            cursorColor: controller.theme.colorScheme.primary,
+            cursorColor: controller.theme.colorScheme.onPrimary,
             labelStyle: FxTextStyle.bodySmall(
                 color: controller.theme.colorScheme.onPrimary, xMuted: true),
             floatingLabelBehavior: FloatingLabelBehavior.never,

@@ -24,7 +24,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
 
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
     controller = FxControllerStore.putOrFind(SearchController());
     controller.addMarkers();
   }
@@ -159,7 +159,7 @@ class _SinglePosition extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = AppTheme.reconSpotTheme;
+    ThemeData theme = AppTheme.communityTBTheme;
     return FxContainer(
       color: theme.primaryColor,
       borderRadiusAll: Constant.containerRadius.medium,

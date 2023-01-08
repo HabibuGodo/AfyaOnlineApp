@@ -44,7 +44,7 @@ class RegisterController extends GetxController {
     emailFocusNode = FocusNode();
     phoneNumberFocusNode = FocusNode();
     idNumberFocusNode = FocusNode();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
     outlineInputBorder = OutlineInputBorder(
       borderRadius:
           BorderRadius.all(Radius.circular(Constant.textFieldRadius.medium)),

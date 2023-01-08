@@ -37,7 +37,7 @@ class LoginOTPController extends GetxController {
   // otp input textfield controllers
   // late OtpFieldController otpController = OtpFieldController();
   var otpinput = ''.obs;
-  late var id;
+  late var phone;
 
   // stop count down timer
   void stopTimer() {
@@ -46,13 +46,11 @@ class LoginOTPController extends GetxController {
 
   @override
   void onInit() {
-    id = Get.arguments['id'];
-    theme = AppTheme.reconSpotTheme;
+    phone = Get.arguments['phone'];
+    theme = AppTheme.communityTBTheme;
 
     super.onInit();
   }
-
-  final phone = authData.read('phoneNumber');
 
   @override
   void onReady() {
@@ -75,11 +73,11 @@ class LoginOTPController extends GetxController {
 
     try {
       final response = await http.post(
-        Uri.parse(baseURL + '/otp'),
+        Uri.parse(baseURL + '/check_otp'),
         headers: <String, String>{"Accept": "application/json"},
         body: {
           'otp': otpinput.value.toString(),
-          'id': id.toString(),
+          'phone': phone.toString(),
         },
       );
       if (response.statusCode == 200) {
@@ -87,16 +85,22 @@ class LoginOTPController extends GetxController {
 
         final jsonResponse = convert.jsonDecode(response.body);
 
-        if (response.body.contains("token")) {
+        if (response.body.contains("success")) {
           Get.snackbar('Success', 'OTP verified successfully',
               backgroundColor: Colors.green, colorText: Colors.white);
+
+          print(jsonResponse['user']);
 
           authData.write('user_id', jsonResponse['user']['id']);
           authData.write('name', jsonResponse['user']['name']);
           authData.write('phone', jsonResponse['user']['phone']);
           authData.write('email', jsonResponse['user']['email']);
-          authData.write('role', jsonResponse['user']['role']);
-          authData.write('token', jsonResponse['token']);
+          authData.write('role', jsonResponse['user']['role_id']);
+          authData.write('mnr', jsonResponse['user']['mnr']);
+          authData.write(
+              'profile_image', jsonResponse['user']['profile_image']);
+
+          // authData.write('token', jsonResponse['token']);
 
           pageBox.write('isLogged', true);
 

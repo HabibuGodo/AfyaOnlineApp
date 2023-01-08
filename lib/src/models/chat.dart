@@ -39,7 +39,7 @@ class Chat {
   }
 
   static Future<String> getData() async {
-    return await rootBundle.loadString('lib/estate/data/chats.json');
+    return await rootBundle.loadString('lib/src/data/chats.json');
   }
 
   static Chat getOneDummy() {

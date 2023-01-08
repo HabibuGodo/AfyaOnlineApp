@@ -17,7 +17,7 @@ class SingleHouseController extends GetxController {
   @override
   void onInit() {
     getHouse();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
 
     super.onInit();
   }

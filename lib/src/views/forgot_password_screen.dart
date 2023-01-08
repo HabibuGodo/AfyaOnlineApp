@@ -19,7 +19,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
     controller = FxControllerStore.putOrFind(ForgotPasswordController());
   }
 

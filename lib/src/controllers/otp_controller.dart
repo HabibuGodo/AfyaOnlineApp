@@ -53,7 +53,7 @@ class OTPController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
 
     name = Get.arguments['name'];
     phone = Get.arguments['phone'];

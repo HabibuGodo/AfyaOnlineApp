@@ -28,7 +28,7 @@ class MyFavoriteController extends GetxController {
   @override
   void onInit() {
     getFavoriteItems();
-    theme = AppTheme.reconSpotTheme;
+    theme = AppTheme.communityTBTheme;
 
     super.onInit();
   }
