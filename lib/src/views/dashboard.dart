@@ -6,6 +6,7 @@ import '../controllers/dashboard_controller.dart';
 import '../services/local_storage.dart';
 import 'chat_screen.dart';
 // import 'explore_screen.dart';
+import 'download_screen.dart';
 import 'home_screen.dart';
 import 'my_items.dart';
 import 'myfavorite.dart';
@@ -24,6 +25,8 @@ class Dashboard extends GetView<DashboardController> {
       case 1:
         return ChatScreen();
       case 2:
+        return DownloadScreen();
+      case 3:
         return ProfileScreen();
       default:
         return HomeScreen();
@@ -55,6 +58,10 @@ class Dashboard extends GetView<DashboardController> {
                 BottomNavigationBarItem(
                   icon: Icon(Icons.chat),
                   label: 'Chat',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.download),
+                  label: 'Download',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person),

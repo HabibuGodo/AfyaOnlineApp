@@ -1,3 +1,4 @@
+import 'package:flutkit/src/controllers/download_controller.dart';
 import 'package:flutkit/src/controllers/single_agent_controller.dart';
 import 'package:flutkit/src/controllers/single_house_controller.dart';
 import 'package:get/get.dart';
@@ -37,6 +38,9 @@ class InsideBindings extends Bindings {
     );
     Get.lazyPut<MyItemController>(
       () => MyItemController(),
+    );
+    Get.lazyPut<DownloadController>(
+      () => DownloadController(),
     );
     Get.lazyPut<SingleItemController>(
       () => SingleItemController(),

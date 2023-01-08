@@ -1,4 +1,5 @@
 import 'package:flutkit/src/models/items_model.dart';
+import 'package:flutkit/src/models/newsfeed_model.dart';
 import 'package:flutkit/src/services/local_storage.dart';
 import 'package:flutkit/theme/constant.dart';
 import 'package:flutter/material.dart';
@@ -16,118 +17,45 @@ import '../services/base_service.dart';
 class HomeScreen extends GetView<HomeController> {
   HomeScreen({Key? key}) : super(key: key);
 
-  List<Widget> _buildCategoryList() {
+  // List<Widget> _buildCategoryList() {
+  //   List<Widget> list = [];
+  //   list.add(FxSpacing.width(24));
+
+  //   controller.categoriesList.forEach((element) {
+  //     list.add(_buildSingleCategory(element));
+  //   });
+
+  //   return list;
+  // }
+
+  // List<Widget> _buildFilterCategoryList() {
+  //   List<Widget> list = [];
+  //   list.add(FxSpacing.width(24));
+  //   controller.categoriesList.forEach((element) {
+  //     list.add(_buildFilterCategory(element));
+  //   });
+  //   return list;
+  // }
+
+  List<Widget> _buildNewsList() {
     List<Widget> list = [];
-    list.add(FxSpacing.width(24));
 
-    controller.categoriesList.forEach((element) {
-      list.add(_buildSingleCategory(element));
-    });
-
-    return list;
-  }
-
-  List<Widget> _buildFilterCategoryList() {
-    List<Widget> list = [];
-    list.add(FxSpacing.width(24));
-    controller.categoriesList.forEach((element) {
-      list.add(_buildFilterCategory(element));
-    });
-    return list;
-  }
-
-  List<Widget> _buildHouseList() {
-    List<Widget> list = [];
-
-    if (controller.items.isEmpty) {
+    if (controller.newsFeeds.isEmpty) {
       return list;
     } else {
       list.add(FxSpacing.width(24));
-      controller.items.forEach((element) {
-        list.add(_buildSingleHouse(element));
+      controller.newsFeeds.forEach((element) {
+        list.add(_buildSingleNewsFeed(element));
       });
 
       return list;
     }
   }
 
-  Widget _buildSingleCategory(AllCategoryModel category) {
-    bool selected = category.name == controller.selectedCategory.value;
-    return FxContainer.bordered(
-      onTap: () {
-        controller.selectCategory(category.name);
-        controller.getFilteredItems(category.id);
-      },
-      borderRadiusAll: 24,
-      border: Border.all(
-        color: selected
-            ? controller.theme.primaryColor
-            : controller.theme.colorScheme.onBackground,
-      ),
-      margin: FxSpacing.right(8),
-      padding: FxSpacing.xy(12, 6),
-      color: selected
-          ? controller.theme.primaryColor
-          : controller.theme.colorScheme.onPrimary,
-      child: FxText.labelMedium(
-        category.name,
-        color: selected
-            ? controller.theme.colorScheme.onPrimary
-            : controller.theme.colorScheme.onBackground,
-      ),
-    );
-    // return Container(
-    //   margin: FxSpacing.right(16),
-    //   child: Column(
-    //     children: [
-    //       FxContainer.rounded(
-    //         color: controller.theme.primaryColor,
-    //         child: Icon(
-    //           Icons.cottage_outlined,
-    //           color: controller.theme.colorScheme.primary,
-    //         ),
-    //       ),
-    //       FxSpacing.height(8),
-    //       FxText.bodySmall(
-    //         category.name,
-    //         xMuted: true,
-    //         fontSize: 12,
-    //       ),
-    //     ],
-    //   ),
-    // );
-  }
-
-  Widget _buildFilterCategory(AllCategoryModel category) {
-    return FxContainer.bordered(
-      paddingAll: 8,
-      borderRadiusAll: Constant.containerRadius.small,
-      margin: FxSpacing.right(8),
-      border: Border.all(color: controller.theme.colorScheme.primary, width: 1),
-      splashColor: controller.theme.primaryColor,
-      color: controller.theme.primaryColor,
-      child: Row(
-        children: [
-          Icon(
-            Icons.cottage_outlined,
-            color: controller.theme.colorScheme.primary,
-            size: 16,
-          ),
-          FxSpacing.width(8),
-          FxText.bodySmall(
-            category.name,
-            fontWeight: 600,
-            color: controller.theme.colorScheme.onPrimary,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSingleHouse(ItemsModel item) {
+  Widget _buildSingleNewsFeed(NewsFeedModel news) {
     return FxContainer(
       onTap: () {
-        Get.toNamed("/single_house", arguments: {'house': item});
+        // Get.toNamed("/single_house", arguments: {'house': news});
       },
       margin: FxSpacing.nTop(24),
       paddingAll: 0,
@@ -136,13 +64,13 @@ class HomeScreen extends GetView<HomeController> {
       child: Column(
         children: [
           Image(
-            image: item.images.isEmpty
+            image: news.image!.isEmpty
                 ? AssetImage("assets/images/apps/estate/estate7.jpg")
                     as ImageProvider
                 : //network image with host
 
-                NetworkImage("$imageURL${item.images[0].url}"),
-            fit: BoxFit.fitWidth,
+                NetworkImage("$imageURL${news.image}"),
+            fit: BoxFit.fill,
           ),
           FxContainer(
             paddingAll: 16,
@@ -156,51 +84,32 @@ class HomeScreen extends GetView<HomeController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     FxText.bodyLarge(
-                      item.name.capitalize!,
+                      news.title!.capitalizeFirst!,
                       fontWeight: 700,
                       color: controller.theme.colorScheme.onPrimary,
                     ),
-                    FxText.bodyMedium(
-                      "\Tsh" + item.price.toString(),
-                      fontWeight: 600,
-                      color: controller.theme.colorScheme.secondary,
-                    ),
-                  ],
-                ),
-                FxSpacing.height(4),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      size: 16,
-                      color: controller.theme.colorScheme.onPrimary,
-                    ),
-                    FxSpacing.width(4),
-                    FxText.bodySmall(
-                      "${item.ward.name}, ${item.ward.district.name}",
-                      xMuted: true,
-                      color: controller.theme.colorScheme.onPrimary,
-                    ),
+                    // FxText.bodyMedium(
+                    //   "\Tsh" + item.price.toString(),
+                    //   fontWeight: 600,
+                    //   color: controller.theme.colorScheme.secondary,
+                    // ),
                   ],
                 ),
                 FxSpacing.height(8),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.streetview,
-                            size: 16,
+                          FxText.bodyMedium(
+                            news.description!.capitalizeFirst!,
                             color: controller.theme.colorScheme.onPrimary,
-                          ),
-                          FxSpacing.width(4),
-                          FxText.bodySmall(
-                            item.ward.district.region.name,
-                            xMuted: true,
-                            color: controller.theme.colorScheme.onPrimary,
+                            fontSize: 14,
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
@@ -208,47 +117,6 @@ class HomeScreen extends GetView<HomeController> {
                   ],
                 ),
                 FxSpacing.height(8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.category,
-                            size: 16,
-                            color: controller.theme.colorScheme.onPrimary,
-                          ),
-                          FxSpacing.width(4),
-                          FxText.bodySmall(
-                            item.subcategory.name,
-                            xMuted: true,
-                            color: controller.theme.colorScheme.onPrimary,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.type_specimen,
-                            size: 16,
-                            color: controller.theme.colorScheme.onPrimary,
-                          ),
-                          FxSpacing.width(4),
-                          FxText.bodySmall(
-                            item.subcategory.category.name,
-                            xMuted: true,
-                            color: controller.theme.colorScheme.onPrimary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
@@ -287,21 +155,19 @@ class HomeScreen extends GetView<HomeController> {
             ),
           ),
           // floating action button
-          floatingActionButton: authData.read("role") == 2
-              ? Container()
-              : FloatingActionButton(
-                  onPressed: () {
-                    // Get.to(() => Chat(),
-                    //     transition: Transition.rightToLeftWithFade);
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              // Get.to(() => Chat(),
+              //     transition: Transition.rightToLeftWithFade);
 
-                    Get.toNamed('/add_item');
-                  },
-                  backgroundColor: controller.theme.colorScheme.primary,
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                  ),
-                ),
+              Get.toNamed('/add_item');
+            },
+            backgroundColor: controller.theme.colorScheme.primary,
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
     );
@@ -362,12 +228,12 @@ class HomeScreen extends GetView<HomeController> {
             ),
           ),
           FxSpacing.height(24),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: _buildCategoryList(),
-            ),
-          ),
+          // SingleChildScrollView(
+          //   scrollDirection: Axis.horizontal,
+          //   child: Row(
+          //     children: _buildCategoryList(),
+          //   ),
+          // ),
           FxSpacing.height(24),
           Padding(
             padding: FxSpacing.horizontal(24),
@@ -386,19 +252,19 @@ class HomeScreen extends GetView<HomeController> {
             ),
           ),
           FxSpacing.height(16),
-          controller.items.length == 0
+          controller.newsFeeds.length == 0
               ? Container(
                   margin: FxSpacing.top(200),
                   child: Center(
                     child: FxText.sh1(
-                      "No items associated with ${controller.selectedCategory}",
+                      "No any news feed",
                       color: controller.theme.colorScheme.onBackground,
                       textAlign: TextAlign.center,
                     ),
                   ),
                 )
               : Column(
-                  children: _buildHouseList(),
+                  children: _buildNewsList(),
                 ),
         ],
       );

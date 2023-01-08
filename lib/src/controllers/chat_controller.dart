@@ -7,9 +7,11 @@ import 'package:flutkit/src/views/single_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutx/flutx.dart';
+import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
 import '../../theme/app_theme.dart';
+import '../../theme/constant.dart';
 import '../models/chat.dart';
 import '../services/base_service.dart';
 import '../services/local_storage.dart';
@@ -17,18 +19,56 @@ import '../services/local_storage.dart';
 class ChatController extends GetxController {
   var showLoading = true.obs, uiLoading = true.obs;
   var chats = <Chat>[].obs;
+  final addGroupKey = GlobalKey<FormState>().obs;
+  late TextEditingController groupNameTE;
+  var groupName = ''.obs;
 
   late ThemeData theme;
   var groups = <GroupModel>[].obs;
+  var groupsTemList = <GroupModel>[].obs;
   late var userId;
+  late OutlineInputBorder outlineInputBorder;
+  var validated1 = false.obs;
 
   @override
   void onInit() {
+    groupNameTE = TextEditingController();
     fetchData();
     theme = AppTheme.communityTBTheme;
+    outlineInputBorder = OutlineInputBorder(
+      borderRadius:
+          BorderRadius.all(Radius.circular(Constant.textFieldRadius.medium)),
+      borderSide: BorderSide(
+        color: Colors.transparent,
+      ),
+    );
     userId = authData.read("user_id");
     getGroups();
+    // groups.refresh();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    groupNameTE.dispose();
+  }
+
+  String? validateGName(String? text) {
+    if (text == null || text.isEmpty) {
+      return "Please enter group name";
+    }
+    return null;
+  }
+
+  void checkValidation1() async {
+    final isValid = addGroupKey.value.currentState!.validate();
+    if (!isValid) {
+      print('Form has Errors....');
+    } else {
+      addGroupKey.value.currentState!.save();
+      validated1.value = true;
+    }
   }
 
   void fetchData() async {
@@ -39,6 +79,61 @@ class ChatController extends GetxController {
     showLoading.value = false;
     uiLoading.value = false;
     update();
+  }
+
+  void filterGroupList(String value) {
+    if (value.isNotEmpty) {
+      groups.value = groupsTemList
+          .where((element) =>
+              element.groupName!.toLowerCase().contains(value.toLowerCase()))
+          .toList()
+          .obs;
+    } else {
+      groups.value = List.from(groupsTemList);
+    }
+  }
+
+  //create group
+
+  Future<void> createGroup() async {
+    EasyLoading.show(
+      status: 'Sending...',
+      maskType: EasyLoadingMaskType.black,
+    );
+    try {
+      final response =
+          await http.post(Uri.parse('$baseURL/create_group'), body: {
+        "name": groupName.value.toString(),
+      }, headers: {
+        "Accept": "application/json"
+      });
+
+      if (response.body.contains("success")) {
+        // snackbar
+        Get.snackbar('Success!',
+            'Successfully Create Group ${groupName.value.toString()}',
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            icon: Icon(
+              Icons.check_circle,
+              color: Colors.white,
+            ));
+        // getGroups();
+        groups.refresh();
+        groupName.value = '';
+        groupNameTE.clear();
+        Get.offAndToNamed('/home');
+        EasyLoading.dismiss();
+      }
+    } catch (e) {
+      EasyLoading.dismiss();
+      log("errrroo ${e.toString()}");
+    } finally {
+      EasyLoading.dismiss();
+      showLoading.value = false;
+      uiLoading.value = false;
+    }
   }
 
   // fetch dalali all items here
@@ -69,6 +164,8 @@ class ChatController extends GetxController {
         List<dynamic> dataEx = jsonResponse;
 
         groups.value = (dataEx).map((e) => GroupModel.fromMap(e)).toList().obs;
+
+        groupsTemList.value = List.from(groups);
         EasyLoading.dismiss();
       } else {
         return;

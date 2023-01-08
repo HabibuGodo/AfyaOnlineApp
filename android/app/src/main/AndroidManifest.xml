@@ -10,7 +10,7 @@
 
     <application
         android:name="${applicationName}"
-        android:label="Community TB"
+        android:label="Afya-HO"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/logo">
 

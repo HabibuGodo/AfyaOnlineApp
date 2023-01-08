@@ -89,7 +89,6 @@ class LoginOTPController extends GetxController {
           Get.snackbar('Success', 'OTP verified successfully',
               backgroundColor: Colors.green, colorText: Colors.white);
 
-          print(jsonResponse['user']);
 
           authData.write('user_id', jsonResponse['user']['id']);
           authData.write('name', jsonResponse['user']['name']);

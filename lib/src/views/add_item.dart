@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutkit/src/models/categories_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
+import 'package:image_pickers/image_pickers.dart';
 
 import '../../../theme/constant.dart';
 import '../controllers/add_item_controller.dart';
@@ -22,7 +25,7 @@ class AddItemScreen extends GetView<AddItemController> {
               20, FxSpacing.safeAreaTop(Get.context!) + 36, 20, 20),
           children: [
             FxText.displaySmall(
-              'Fill Item Details',
+              'News feed',
               fontWeight: 700,
               color: controller.theme.colorScheme.primary,
             ),
@@ -32,92 +35,6 @@ class AddItemScreen extends GetView<AddItemController> {
               child: Column(
                 children: [
                   FxSpacing.height(20),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: controller.theme.primaryColor.withOpacity(0.5),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.white,
-                      ),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 15),
-                      child: DropdownButtonFormField<AllCategoryModel>(
-                        dropdownColor: Colors.white,
-                        decoration: InputDecoration(
-                          hintText: "Category",
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: controller.theme.colorScheme.onPrimary),
-                          ),
-                        ),
-                        isExpanded: true,
-                        items: controller.categoriesList.map((item) {
-                          return DropdownMenuItem<AllCategoryModel>(
-                            value: item,
-                            child: Text(item.name.toUpperCase()),
-                          );
-                        }).toList(),
-                        onChanged: (AllCategoryModel? category) {
-                          controller.subCategory.value = '';
-                          controller.selectedCategory(category: category!);
-
-                          // log("OLDDD ${controller.subCategory.value.toString()}");
-                        },
-                      ),
-                    ),
-                  ),
-                  controller.subcategoryList.isNotEmpty
-                      ? FxSpacing.height(20)
-                      : Container(),
-                  controller.subcategoryList.isNotEmpty
-                      ? Container(
-                          decoration: BoxDecoration(
-                            color:
-                                controller.theme.primaryColor.withOpacity(0.4),
-                            border: Border.all(
-                              width: 1,
-                              color: Colors.white,
-                            ),
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 15),
-                            child: DropdownButtonFormField<String>(
-                              dropdownColor: Colors.white,
-                              decoration: InputDecoration(
-                                hintText: "Subcategory",
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: controller.theme.primaryColor
-                                        ..withOpacity(0.4)),
-                                ),
-                              ),
-                              isExpanded: true,
-                              items:
-                                  controller.subcategoryList.value.map((item) {
-                                return DropdownMenuItem<String>(
-                                  value: item.id.toString(),
-                                  child: Text(item.name.toUpperCase()),
-                                );
-                              }).toList(),
-                              value: controller.subCategory.value,
-                              onChanged: (String? value) {
-                                controller.subCategory.value = value!;
-                              },
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Please select a subcategory";
-                                }
-                                return null;
-                              },
-                              onSaved: (newValue) =>
-                                  controller.subCategory.value = newValue!,
-                            ),
-                          ),
-                        )
-                      : Container(),
                   FxSpacing.height(20),
                   TextFormField(
                     style: FxTextStyle.bodyMedium(),
@@ -127,7 +44,7 @@ class AddItemScreen extends GetView<AddItemController> {
                         filled: true,
                         fillColor:
                             controller.theme.primaryColor.withOpacity(0.4),
-                        hintText: "Item Title",
+                        hintText: "Title",
                         enabledBorder: controller.outlineInputBorder,
                         focusedBorder: controller.outlineInputBorder,
                         border: controller.outlineInputBorder,
@@ -139,32 +56,7 @@ class AddItemScreen extends GetView<AddItemController> {
                     validator: controller.validateTitle,
                     cursorColor: controller.theme.colorScheme.onBackground,
                     onSaved: (value) {
-                      controller.itemTitle.value = value.toString();
-                    },
-                  ),
-                  FxSpacing.height(20),
-                  TextFormField(
-                    style: FxTextStyle.bodyMedium(),
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                        isDense: true,
-                        filled: true,
-                        fillColor:
-                            controller.theme.primaryColor.withOpacity(0.4),
-                        hintText: "Price",
-                        enabledBorder: controller.outlineInputBorder,
-                        focusedBorder: controller.outlineInputBorder,
-                        border: controller.outlineInputBorder,
-                        contentPadding: FxSpacing.all(16),
-                        hintStyle: FxTextStyle.bodyMedium(),
-                        isCollapsed: true),
-                    maxLines: 1,
-                    controller: controller.priceTE,
-                    validator: controller.validatePrice,
-                    cursorColor: controller.theme.colorScheme.onBackground,
-                    onSaved: (value) {
-                      controller.price.value = int.parse(value.toString());
+                      controller.newsTitle.value = value.toString();
                     },
                   ),
                   FxSpacing.height(20),
@@ -196,98 +88,65 @@ class AddItemScreen extends GetView<AddItemController> {
               ),
             ),
             FxSpacing.height(20),
-            Container(
-              decoration: BoxDecoration(
-                color: controller.theme.primaryColor.withOpacity(0.4),
-                border: Border.all(
-                  width: 1,
-                  color: Colors.white,
+            Column(
+              children: [
+                Container(
+                  height: 50,
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: OutlinedButton(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.file_copy),
+                          SizedBox(width: 10.0),
+                          Flexible(
+                            child: controller.myPhoto1.value != ''
+                                ? Text(
+                                    "Change Images",
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                    ),
+                                  )
+                                : Text(
+                                    "Select Images",
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                          ),
+                        ],
+                      ),
+                      onPressed: () {
+                        _openImagePicker(Get.context!);
+                      }),
                 ),
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: DropdownButtonFormField(
-                dropdownColor: Colors.white,
-                decoration: InputDecoration(
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  hintText: "Select Item Type ",
-                  filled: true,
-                  prefixIcon: Icon(Icons.card_membership),
-                ),
-                isExpanded: true,
-                items: [
-                  DropdownMenuItem(
-                    child: Text(
-                      "Normal",
-                      style: FxTextStyle.bodyMedium(),
-                    ),
-                    value: "Normal",
-                  ),
-                  DropdownMenuItem(
-                    child: Text(
-                      "Gold",
-                      style: FxTextStyle.bodyMedium(),
-                    ),
-                    value: "Gold",
-                  ),
-                  DropdownMenuItem(
-                    child: Text(
-                      "Diamond",
-                      style: FxTextStyle.bodyMedium(),
-                    ),
-                    value: "Diamond",
-                  ),
-                ],
-                onChanged: (String? value) {
-                  controller.itemType.value = value!.toString();
-                },
-                validator: (value) =>
-                    controller.validateItemType(value.toString()),
-                onSaved: (newValue) =>
-                    controller.itemType.value = newValue!.toString(),
-              ),
+                controller.listImagePaths.isEmpty
+                    ? Container()
+                    : GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: controller.listImagePaths.length,
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 20.0,
+                            crossAxisSpacing: 10.0,
+                            childAspectRatio: 1.0),
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              ImagePickers.previewImagesByMedia(
+                                  controller.listImagePaths, index);
+                            },
+                            child: Image.file(
+                              File(
+                                controller.listImagePaths[index].path!,
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          );
+                        }),
+              ],
             ),
-            FxSpacing.height(10),
-
-            controller.itemType.value == '' &&
-                    controller.firstTime.value == false
-                ? Container(
-                    margin: EdgeInsets.only(left: 15),
-                    child: Text(
-                      "You must select item type",
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  )
-                : Container(),
-
-            // TextFormField(
-            //         style: FxTextStyle.bodyMedium(),
-            //         decoration: InputDecoration(
-            //             floatingLabelBehavior: FloatingLabelBehavior.never,
-            //             filled: true,
-            //             isDense: true,
-            //             fillColor:
-            //                 controller.theme.primaryColor,
-            //             // prefixIcon: Icon(
-            //             //   FeatherIcons.di,
-            //             //   color: theme.colorScheme.onBackground,
-            //             // ),
-            //             hintText: "Id Number",
-            //             enabledBorder: controller.outlineInputBorder,
-            //             focusedBorder: controller.outlineInputBorder,
-            //             border: controller.outlineInputBorder,
-            //             contentPadding: FxSpacing.all(16),
-            //             hintStyle: FxTextStyle.bodyMedium(),
-            //             isCollapsed: true),
-            //         maxLines: 1,
-            //         controller: controller.idNumberTE,
-            //         cursorColor: controller.theme.colorScheme.onBackground,
-            //         validator: controller.validateIdNumber,
-            //         onSaved: (value) {
-            //           controller.idNumber.value = value.toString();
-            //         },
-            //       ),
-
             FxSpacing.height(20),
             FxButton.block(
               elevation: 0,
@@ -295,15 +154,16 @@ class AddItemScreen extends GetView<AddItemController> {
               onPressed: () {
                 controller.checkValidation1();
                 if (controller.validated1.value == true) {
-                  Get.toNamed('/add_item_location');
+                  // Get.toNamed('/add_item_location');
                   // controller.postPhoneNumber();
                   controller.validated1.value = true;
+                  controller.postProduct();
                 }
               },
               splashColor: controller.theme.colorScheme.onPrimary.withAlpha(30),
               backgroundColor: controller.theme.colorScheme.primary,
               child: FxText.labelLarge(
-                "Continue",
+                "Post",
                 color: controller.theme.colorScheme.onPrimary,
               ),
             ),
@@ -312,5 +172,56 @@ class AddItemScreen extends GetView<AddItemController> {
         ),
       ),
     );
+  }
+
+  void _openImagePicker(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            color: Colors.white,
+            height: 210.0,
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                Text(
+                  'Pick an Image',
+                  style: TextStyle(
+                      color: Colors.grey[600], fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      primary: Theme.of(Get.context!).primaryColor),
+                  child: Text(
+                    'Choose Images',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () {
+                    // _getImage(context, picture.ImageSource.gallery);
+                    controller.selectImages('gallery');
+
+                    // controller.uploadPhoto(
+                    //     picture.ImageSource.gallery, imgNumber);
+                  },
+                ),
+                // TextButton(
+                //   style: TextButton.styleFrom(
+                //       primary: Theme.of(Get.context!).primaryColor),
+                //   child: Text('Use Camera'),
+                //   onPressed: () {
+                //     // _getImage(context, picture.ImageSource.camera);
+                //     // controller.uploadPhoto(ImageSource.gallery);
+                //     controller.selectImages('camera');
+                //     // controller.uploadPhoto(
+                //     //     picture.ImageSource.camera, imgNumber);
+                //   },
+                // ),
+              ],
+            ),
+          );
+        });
   }
 }

@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 import '../controllers/chat_controller.dart';
 import '../models/chat.dart';
+import '../services/local_storage.dart';
 
 class ChatScreen extends GetView<ChatController> {
   ChatScreen({Key? key});
@@ -26,7 +27,8 @@ class ChatScreen extends GetView<ChatController> {
   Widget _buildSingleChat(GroupModel group) {
     return FxContainer(
       onTap: () {
-        Get.toNamed('/single_chat', arguments: {'groupId': group.id});
+        Get.toNamed('/single_chat',
+            arguments: {'groupId': group.id, 'groupName': group.groupName});
       },
       margin: FxSpacing.bottom(16),
       paddingAll: 16,
@@ -135,6 +137,23 @@ class ChatScreen extends GetView<ChatController> {
               ],
             ),
           ),
+
+          // floating action button
+          floatingActionButton: authData.read("role") == 2
+              ? Container()
+              : FloatingActionButton(
+                  onPressed: () {
+                    // Get.to(() => Chat(),
+                    //     transition: Transition.rightToLeftWithFade);
+
+                    Get.toNamed('/add_group');
+                  },
+                  backgroundColor: controller.theme.colorScheme.primary,
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                ),
         ),
       ),
     );
@@ -161,20 +180,23 @@ class ChatScreen extends GetView<ChatController> {
           FxTextField(
             textFieldStyle: FxTextFieldStyle.outlined,
             labelText: 'Search Group...',
-            focusedBorderColor: controller.theme.colorScheme.primary,
+            focusedBorderColor: controller.theme.colorScheme.onPrimary,
             enabledBorderRadius: Constant.containerRadius.medium,
             focusedBorderRadius: Constant.containerRadius.medium,
             cursorColor: controller.theme.colorScheme.onPrimary,
             labelStyle: FxTextStyle.bodySmall(
-                color: controller.theme.colorScheme.onPrimary, xMuted: true),
+                color: controller.theme.colorScheme.onPrimary, xMuted: false),
             floatingLabelBehavior: FloatingLabelBehavior.never,
             filled: true,
-            fillColor: controller.theme.primaryColor,
+            fillColor: controller.theme.colorScheme.primary.withOpacity(0.5),
             suffixIcon: Icon(
               FeatherIcons.search,
-              color: controller.theme.colorScheme.primary,
+              color: controller.theme.colorScheme.onPrimary,
               size: 20,
             ),
+            onChanged: (value) {
+              controller.filterGroupList(value);
+            },
           ),
           FxSpacing.height(20),
           Column(

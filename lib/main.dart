@@ -15,14 +15,12 @@ import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'src/bindings/insideBindings.dart';
 import 'src/bindings/outsideBindings.dart';
-import 'src/views/add_item_images.dart';
-import 'src/views/add_item_location.dart';
+import 'src/views/add_group.dart';
 import 'src/views/contactus.dart';
 import 'src/views/dashboard.dart';
 import 'src/views/login_otp.dart';
 import 'src/views/login_screen.dart';
 import 'src/views/otp_screen.dart';
-import 'src/views/register_screen2.dart';
 import 'src/views/single_agent_screen.dart';
 import 'src/views/single_chat_screen.dart';
 import 'src/views/single_house_screen.dart';
@@ -54,7 +52,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           theme: AppTheme.theme,
-          title: 'Reaco Spot',
+          title: 'Afya-HO',
           initialBinding: OutsideBindings(),
           builder: EasyLoading.init(),
 
@@ -131,21 +129,19 @@ class MyApp extends StatelessWidget {
                 page: () => const AddItemScreen(),
                 binding: InsideBindings(),
                 transition: Transition.leftToRightWithFade),
+
+            GetPage(
+                name: '/add_group',
+                page: () => const AddGroupScreen(),
+                binding: InsideBindings(),
+                transition: Transition.leftToRightWithFade),
+
             GetPage(
                 name: '/single_favorite_item',
                 page: () => const SingleFavoriteScreen(),
                 binding: InsideBindings(),
                 transition: Transition.leftToRightWithFade),
-            GetPage(
-                name: '/add_item_location',
-                page: () => const AddItemLocationScreen(),
-                binding: InsideBindings(),
-                transition: Transition.leftToRightWithFade),
-            GetPage(
-                name: '/add_item_images',
-                page: () => const AddItemImagesScreen(),
-                binding: InsideBindings(),
-                transition: Transition.leftToRightWithFade),
+
             GetPage(
                 name: '/single_agent',
                 page: () => const SingleAgentScreen(),
