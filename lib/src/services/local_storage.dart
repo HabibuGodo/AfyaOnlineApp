@@ -36,3 +36,4 @@ final appBox = GetStorage();
 final pageBox = GetStorage();
 
 final authData = GetStorage();
+final downLoadData = GetStorage();

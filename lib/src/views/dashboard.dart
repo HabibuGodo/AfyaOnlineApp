@@ -4,8 +4,9 @@ import 'package:get/get.dart';
 import '../componets/shared_function.controller.dart';
 import '../controllers/dashboard_controller.dart';
 import '../services/local_storage.dart';
-import 'chat_screen.dart';
 // import 'explore_screen.dart';
+import 'chats/group_list_screen.dart';
+import 'chats/chats_landpage.dart';
 import 'download_screen.dart';
 import 'home_screen.dart';
 import 'my_items.dart';
@@ -23,7 +24,8 @@ class Dashboard extends GetView<DashboardController> {
       // case 1:
       //   return authData.read('role') == "Dalali" ? MyItems() : MyFavorite();
       case 1:
-        return ChatScreen();
+        return AllChats();
+      // return ChatScreen();
       case 2:
         return DownloadScreen();
       case 3:

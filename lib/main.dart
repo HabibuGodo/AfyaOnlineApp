@@ -1,4 +1,7 @@
 import 'package:flutkit/src/views/add_item.dart';
+import 'package:flutkit/src/views/chats/groupchat_screen.dart';
+import 'package:flutkit/src/views/chats/single_chat_screen.dart';
+import 'package:flutkit/src/views/chats/single_users_list.dart';
 import 'package:flutkit/src/views/register_screen1.dart';
 import 'package:flutkit/localizations/app_localization_delegate.dart';
 import 'package:flutkit/localizations/language.dart';
@@ -22,7 +25,6 @@ import 'src/views/login_otp.dart';
 import 'src/views/login_screen.dart';
 import 'src/views/otp_screen.dart';
 import 'src/views/single_agent_screen.dart';
-import 'src/views/single_chat_screen.dart';
 import 'src/views/single_house_screen.dart';
 import 'src/views/single_item_screen.dart';
 import 'src/views/splash_screen.dart';
@@ -147,12 +149,23 @@ class MyApp extends StatelessWidget {
                 page: () => const SingleAgentScreen(),
                 binding: InsideBindings(),
                 transition: Transition.downToUp),
+            GetPage(
+                name: '/group_chat',
+                page: () => const GroupChatScreen(),
+                binding: InsideBindings(),
+                transition: Transition.fadeIn),
 
             GetPage(
                 name: '/single_chat',
                 page: () => const SingleChatScreen(),
                 binding: InsideBindings(),
                 transition: Transition.fadeIn),
+            GetPage(
+                name: '/user_list',
+                page: () => const UserListScreen(),
+                binding: InsideBindings(),
+                transition: Transition.fadeIn),
+
             GetPage(
                 name: '/contact-us',
                 page: () => ContactUsPage(),

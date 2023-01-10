@@ -1,12 +1,217 @@
+import 'dart:developer';
+
 import 'package:flutkit/loading_effect.dart';
+import 'package:flutkit/src/views/resources/preview_doc.dart';
 import 'package:flutkit/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../controllers/download_controller.dart';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../services/local_storage.dart';
+
 class DownloadScreen extends GetView<DownloadController> {
+  const DownloadScreen({key});
+
+  @override
+  Widget build(BuildContext context) {
+    String url1 =
+        "https://www.moh.go.tz/storage/app/uploads/public/61b/084/21e/61b08421e2f71055061527.pdf";
+    String url2 =
+        "https://www.doctorsoftheworld.org.uk/wp-content/uploads/2020/06/Kiswahili-Covid19-Guidance.pdf";
+
+    return Obx(
+      () => controller.uiLoading.value
+          ? Container(
+              child: LoadingEffect.getSearchLoadingScreen(
+              Get.context!,
+            ))
+          : SafeArea(
+              child: Scaffold(
+                appBar: AppBar(
+                  leading: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                    ),
+                    onPressed: () {
+                      Get.back();
+                    },
+                  ),
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  elevation: 0,
+                  title: FxText.sh1(
+                    "Resources",
+                    textAlign: TextAlign.center,
+                  ),
+
+                  // const Text('Class Modules', style: TextStyle(color: controller.theme.colorScheme.primary)
+                  // ),
+                  centerTitle: true,
+                ),
+                body: SafeArea(
+                    child: Container(
+                  padding: const EdgeInsets.all(8),
+                  child: ListView(
+                    children: [
+                      FxSpacing.height(8),
+                      // notes list
+                      Container(
+                        child: ListTile(
+                          onTap: () {
+                            // print file path
+
+                            // var base = ImageURL.trim();
+
+                            // var filePath =
+                            //     base + controller.notesList[index].file;
+
+                            Get.to(() => PDFViewerCachedFromUrl(
+                                  url: url1,
+                                  name: "Sera Ya Afya",
+                                ));
+                          },
+                          // leadung image
+                          leading: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                image: DecorationImage(
+                                    image: AssetImage('assets/icons/pdf.png'),
+                                    fit: BoxFit.cover)),
+                          ),
+                          title: FxText.bodyMedium(
+                            "Sera Ya Afya",
+                            fontWeight: 600,
+                          ),
+                          // trailing: controller.indexVar1.value == true
+                          //     ? CircularPercentIndicator(
+                          //         radius: 15.0,
+                          //         lineWidth: 3.0,
+                          //         percent: controller.percentage.value / 100,
+                          //         center: Text(
+                          //           "${controller.percentage.value.toString()}%",
+                          //           style: TextStyle(fontSize: 12),
+                          //         ),
+                          //         progressColor: Colors.green,
+                          //       )
+                          //     : downLoadData.read("checkFilename") ==
+                          //             "Sera Ya Afya"
+                          //         ? IconButton(
+                          //             icon: Icon(
+                          //               FeatherIcons.file,
+                          //               color: Theme.of(context).primaryColor,
+                          //             ),
+                          //             onPressed: () async {
+                          //               log(downLoadData.read("Sera Ya Afya"));
+                          //               // OpenFile.open("/sdcard/example.txt");
+                          //             },
+                          //           )
+                          //         : IconButton(
+                          //             icon: Icon(
+                          //               FeatherIcons.download,
+                          //               color: Theme.of(context).primaryColor,
+                          //             ),
+                          //             onPressed: () async {
+                          //               log("message");
+                          //               controller.permissionReady.value =
+                          //                   await controller.checkPermission();
+                          //               if (controller.permissionReady.value) {
+                          //                 controller.downloadNow(
+                          //                     url1, "Sera Ya Afya", 1);
+                          //               }
+                          //             },
+                          //           ),
+                          subtitle: const Text('Uploaded on 09-01-2023'),
+                        ),
+                      ),
+                      FxSpacing.height(4),
+                      Divider(),
+                      FxSpacing.height(4),
+                      Container(
+                        child: ListTile(
+                          onTap: () {
+                            // print file path
+
+                            // var base = ImageURL.trim();
+
+                            // var filePath =
+                            //     base + controller.notesList[index].file;
+
+                            Get.to(() => PDFViewerCachedFromUrl(
+                                  url: url2,
+                                  name:
+                                      "Mwongozo wa Virusi Vya Korona (COVID-19)",
+                                ));
+                          },
+                          // leadung image
+                          leading: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                image: DecorationImage(
+                                    image: AssetImage('assets/icons/pdf.png'),
+                                    fit: BoxFit.cover)),
+                          ),
+                          title: FxText.bodyMedium(
+                            "Mwongozo wa Virusi Vya Korona (COVID-19)",
+                            fontWeight: 600,
+                          ),
+                          // trailing: controller.indexVar2.value == true
+                          //     ? CircularPercentIndicator(
+                          //         radius: 15.0,
+                          //         lineWidth: 3.0,
+                          //         percent: controller.percentage.value / 100,
+                          //         center: Text(
+                          //           "${controller.percentage.value.toString()}%",
+                          //           style: TextStyle(fontSize: 12),
+                          //         ),
+                          //         progressColor: Colors.green,
+                          //       )
+                          //     : controller.indexVarComp2.value == true
+                          //         ? IconButton(
+                          //             icon: Icon(
+                          //               FeatherIcons.file,
+                          //               color: Theme.of(context).primaryColor,
+                          //             ),
+                          //             onPressed: () async {},
+                          //           )
+                          //         : IconButton(
+                          //             icon: Icon(
+                          //               FeatherIcons.download,
+                          //               color: Theme.of(context).primaryColor,
+                          //             ),
+                          //             onPressed: () async {
+                          //               controller.permissionReady.value =
+                          //                   await controller.checkPermission();
+                          //               if (controller.permissionReady.value) {
+                          //                 controller.downloadNow(
+                          //                     url1,
+                          //                     "Mwongozo wa Virusi Vya Korona (COVID-19)",
+                          //                     2);
+                          //               }
+                          //             },
+                          //           ),
+                          subtitle: const Text('Uploaded on 08-01-2023'),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+              ),
+            ),
+    );
+  }
+}
+
+class DownloadScreen1 extends GetView<DownloadController> {
   List<Widget> _buildDownloadMovieList() {
     List<Widget> list = [];
     list.add(_buildSingleDownloadMovie());

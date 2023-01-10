@@ -67,14 +67,16 @@ class HomeScreen extends GetView<HomeController> {
             image: news.image!.isEmpty
                 ? AssetImage("assets/images/apps/estate/estate7.jpg")
                     as ImageProvider
-                : //network image with host
-
-                NetworkImage("$imageURL${news.image}"),
-            fit: BoxFit.fill,
+                : NetworkImage(
+                    "$imageURL${news.image}",
+                  ),
+            fit: BoxFit.cover,
+            height: 250,
+            width: double.infinity,
           ),
           FxContainer(
             paddingAll: 16,
-            color: controller.theme.primaryColor,
+            // color: controller.theme.primaryColor.withOpacity(0.8),
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(Constant.containerRadius.medium),
                 bottomRight: Radius.circular(Constant.containerRadius.medium)),
@@ -85,8 +87,8 @@ class HomeScreen extends GetView<HomeController> {
                   children: [
                     FxText.bodyLarge(
                       news.title!.capitalizeFirst!,
-                      fontWeight: 700,
-                      color: controller.theme.colorScheme.onPrimary,
+                      fontWeight: 900,
+                      // color: controller.theme.colorScheme.onPrimary,
                     ),
                     // FxText.bodyMedium(
                     //   "\Tsh" + item.price.toString(),
@@ -104,12 +106,14 @@ class HomeScreen extends GetView<HomeController> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          FxText.bodyMedium(
-                            news.description!.capitalizeFirst!,
-                            color: controller.theme.colorScheme.onPrimary,
-                            fontSize: 14,
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
+                          Expanded(
+                            child: FxText.bodyMedium(
+                              news.description!.capitalizeFirst!,
+                              // color: controller.theme.colorScheme.onPrimary,
+                              fontSize: 15,
+                              maxLines: 50,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       ),
@@ -133,25 +137,30 @@ class HomeScreen extends GetView<HomeController> {
             colorScheme: controller.theme.colorScheme
                 .copyWith(secondary: controller.theme.primaryColor)),
         child: Scaffold(
-          body: Container(
-            padding: FxSpacing.top(FxSpacing.safeAreaTop(context)),
-            child: Column(
-              children: [
-                Container(
-                  height: 2,
-                  child: controller.showLoading.value == true
-                      ? LinearProgressIndicator(
-                          color: controller.theme.colorScheme.primary,
-                          minHeight: 2,
-                        )
-                      : Container(
-                          height: 2,
-                        ),
-                ),
-                Expanded(
-                  child: _buildBody(),
-                ),
-              ],
+          body: RefreshIndicator(
+            onRefresh: () async {
+              controller.getNewsFeeds();
+            },
+            child: Container(
+              padding: FxSpacing.top(FxSpacing.safeAreaTop(context)),
+              child: Column(
+                children: [
+                  Container(
+                    height: 2,
+                    child: controller.showLoading.value == true
+                        ? LinearProgressIndicator(
+                            color: controller.theme.colorScheme.primary,
+                            minHeight: 2,
+                          )
+                        : Container(
+                            height: 2,
+                          ),
+                  ),
+                  Expanded(
+                    child: _buildBody(),
+                  ),
+                ],
+              ),
             ),
           ),
           // floating action button

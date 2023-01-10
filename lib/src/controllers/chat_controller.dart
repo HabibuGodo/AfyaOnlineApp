@@ -2,8 +2,9 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:flutkit/src/models/conversationModel.dart';
 import 'package:flutkit/src/models/group_model.dart';
-import 'package:flutkit/src/views/single_chat_screen.dart';
+import 'package:flutkit/src/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutx/flutx.dart';
@@ -26,6 +27,10 @@ class ChatController extends GetxController {
   late ThemeData theme;
   var groups = <GroupModel>[].obs;
   var groupsTemList = <GroupModel>[].obs;
+  var allConvoTemList = <CoversatationModel>[].obs;
+  var allConvo = <CoversatationModel>[].obs;
+  var allUserTemList = <UserModel>[].obs;
+  var allUser = <UserModel>[].obs;
   late var userId;
   late OutlineInputBorder outlineInputBorder;
   var validated1 = false.obs;
@@ -44,7 +49,8 @@ class ChatController extends GetxController {
     );
     userId = authData.read("user_id");
     getGroups();
-    // groups.refresh();
+    getConvoList();
+    getUserList();
     super.onInit();
   }
 
@@ -93,6 +99,18 @@ class ChatController extends GetxController {
     }
   }
 
+  void filterUsersList(String value) {
+    if (value.isNotEmpty) {
+      allUser.value = allUserTemList
+          .where((element) =>
+              element.name!.toLowerCase().contains(value.toLowerCase()))
+          .toList()
+          .obs;
+    } else {
+      allUser.value = List.from(allUserTemList);
+    }
+  }
+
   //create group
 
   Future<void> createGroup() async {
@@ -136,7 +154,7 @@ class ChatController extends GetxController {
     }
   }
 
-  // fetch dalali all items here
+  //============ fetch all groups here
   Future<void> getGroups() async {
     showLoading.value = true;
     uiLoading.value = true;
@@ -157,8 +175,6 @@ class ChatController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        // decode response to observable list
-        // log(response.data);
         var jsonResponse = response.data['data'];
 
         List<dynamic> dataEx = jsonResponse;
@@ -166,6 +182,97 @@ class ChatController extends GetxController {
         groups.value = (dataEx).map((e) => GroupModel.fromMap(e)).toList().obs;
 
         groupsTemList.value = List.from(groups);
+        EasyLoading.dismiss();
+      } else {
+        return;
+      }
+
+      // }
+    } catch (e) {
+      log("errrroo ${e.toString()}");
+    } finally {
+      showLoading.value = false;
+      uiLoading.value = false;
+    }
+  }
+
+  //======================Single chat Convo List
+  Future<void> getConvoList() async {
+    showLoading.value = true;
+    uiLoading.value = true;
+    try {
+      // categories.value = Category.categoryList();
+
+      Dio dio = Dio();
+
+      DioCacheManager _dioCacheManager = DioCacheManager(CacheConfig());
+      Options cacheOptions = buildCacheOptions(Duration(days: 30),
+          forceRefresh: true,
+          options: Options(extra: {"context": "all_groups"}));
+      dio.interceptors.add(_dioCacheManager.interceptor);
+
+      final response = await dio.get(
+        '$baseURL/conversations/$userId',
+        options: cacheOptions,
+      );
+
+      if (response.statusCode == 200) {
+        // decode response to observable list
+        // log(response.data);
+        var jsonResponse = response.data['data'];
+
+        List<dynamic> dataEx = jsonResponse;
+
+        allConvo.value =
+            (dataEx).map((e) => CoversatationModel.fromMap(e)).toList().obs;
+
+        allConvoTemList.value = List.from(allConvo);
+
+        EasyLoading.dismiss();
+      } else {
+        return;
+      }
+
+      // }
+    } catch (e) {
+      log("errrroo ${e.toString()}");
+    } finally {
+      showLoading.value = false;
+      uiLoading.value = false;
+    }
+  }
+
+  //======================Single chat User List
+  Future<void> getUserList() async {
+    showLoading.value = true;
+    uiLoading.value = true;
+    try {
+      // categories.value = Category.categoryList();
+
+      Dio dio = Dio();
+
+      DioCacheManager _dioCacheManager = DioCacheManager(CacheConfig());
+      Options cacheOptions = buildCacheOptions(Duration(days: 30),
+          forceRefresh: true,
+          options: Options(extra: {"context": "all_groups"}));
+      dio.interceptors.add(_dioCacheManager.interceptor);
+
+      final response = await dio.get(
+        '$baseURL/users/$userId',
+        options: cacheOptions,
+      );
+
+      if (response.statusCode == 200) {
+        // decode response to observable list
+        // log(response.data);
+        var jsonResponse = response.data['data'];
+
+        List<dynamic> dataEx = jsonResponse;
+
+        allUser.value = (dataEx).map((e) => UserModel.fromMap(e)).toList().obs;
+
+        allUserTemList.value = List.from(allUser);
+        log(allUser.toString());
         EasyLoading.dismiss();
       } else {
         return;

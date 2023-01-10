@@ -9,7 +9,7 @@ import '../controllers/dashboard_controller.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/my_favorite_controller.dart';
 import '../controllers/my_item_controller.dart';
-import '../controllers/single_chat_controller.dart';
+import '../controllers/all_inside_chat_controller.dart';
 import '../controllers/single_favorite_controller.dart';
 import '../controllers/single_item_controller.dart';
 
@@ -33,8 +33,8 @@ class InsideBindings extends Bindings {
     Get.lazyPut<ChatController>(
       () => ChatController(),
     );
-    Get.lazyPut<SingleChatController>(
-      () => SingleChatController(),
+    Get.lazyPut<AllInsideChatController>(
+      () => AllInsideChatController(),
     );
     Get.lazyPut<MyItemController>(
       () => MyItemController(),
