@@ -8,13 +8,13 @@ import 'package:flutkit/loading_effect.dart';
 import 'package:flutkit/theme/app_theme.dart';
 import 'package:get/get.dart';
 
-import '../controllers/home_controller.dart';
+import '../controllers/share_controller.dart';
 import '../models/categories_model.dart';
 import '../models/category.dart';
 import '../models/house.dart';
 import '../services/base_service.dart';
 
-class HomeScreen extends GetView<HomeController> {
+class HomeScreen extends GetView<ShareController> {
   HomeScreen({Key? key}) : super(key: key);
 
   // List<Widget> _buildCategoryList() {

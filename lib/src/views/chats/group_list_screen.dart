@@ -1,5 +1,5 @@
 import 'package:flutkit/loading_effect.dart';
-import 'package:flutkit/src/controllers/chat_controller.dart';
+import 'package:flutkit/src/controllers/chats/chat_controller.dart';
 import 'package:flutkit/src/models/group_model.dart';
 import 'package:flutkit/theme/constant.dart';
 import 'package:flutter/material.dart';

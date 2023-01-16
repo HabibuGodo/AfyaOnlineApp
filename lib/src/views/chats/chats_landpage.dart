@@ -1,4 +1,4 @@
-import 'package:flutkit/src/controllers/all_inside_chat_controller.dart';
+import 'package:flutkit/src/controllers/chats/all_inside_chat_controller.dart';
 import 'package:flutkit/src/views/chats/single_user_convo_list.dart';
 import 'package:flutkit/src/views/chats/single_users_list.dart';
 import 'package:flutter/material.dart';

@@ -7,7 +7,7 @@ import '../../theme/app_theme.dart';
 import '../models/newsfeed_model.dart';
 import '../services/base_service.dart';
 
-class HomeController extends GetxController {
+class ShareController extends GetxController {
   var showLoading = true.obs, uiLoading = true.obs;
 
   late ThemeData theme;

@@ -3,7 +3,7 @@ import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
 
 import '../../../theme/constant.dart';
-import '../controllers/chat_controller.dart';
+import '../controllers/chats/chat_controller.dart';
 
 class AddGroupScreen extends GetView<ChatController> {
   const AddGroupScreen({key});

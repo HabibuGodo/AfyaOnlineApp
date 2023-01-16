@@ -13,7 +13,6 @@ import 'dart:convert' as convert;
 import '../../theme/app_theme.dart';
 import '../../theme/constant.dart';
 import '../services/base_service.dart';
-import '../views/forgot_password_screen.dart';
 import 'package:http/http.dart' as http;
 
 class LogInController extends GetxController {
@@ -45,14 +44,6 @@ class LogInController extends GetxController {
   void onClose() {
     super.onClose();
     mrnController.dispose();
-  }
-
-  void goToForgotPasswordScreen() {
-    Navigator.of(Get.context!, rootNavigator: true).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => ForgotPasswordScreen(),
-      ),
-    );
   }
 
   // void login() {

@@ -2,7 +2,6 @@ import 'package:flutkit/src/views/add_item.dart';
 import 'package:flutkit/src/views/chats/groupchat_screen.dart';
 import 'package:flutkit/src/views/chats/single_chat_screen.dart';
 import 'package:flutkit/src/views/chats/single_users_list.dart';
-import 'package:flutkit/src/views/register_screen1.dart';
 import 'package:flutkit/localizations/app_localization_delegate.dart';
 import 'package:flutkit/localizations/language.dart';
 import 'package:flutkit/src/views/single_favorite_screen.dart';
@@ -57,16 +56,6 @@ class MyApp extends StatelessWidget {
           title: 'Afya-HO',
           initialBinding: OutsideBindings(),
           builder: EasyLoading.init(),
-
-          //  (context, child) {
-          //   EasyLoading.init(
-
-          //   );
-          //   return Directionality(
-          //     textDirection: AppTheme.textDirection,
-          //     child: child!,
-          //   );
-          // },
           localizationsDelegates: [
             AppLocalizationsDelegate(context),
             // Add this line
@@ -91,11 +80,7 @@ class MyApp extends StatelessWidget {
                 page: () => const LoginOTP(),
                 binding: OutsideBindings(),
                 transition: Transition.fadeIn),
-            GetPage(
-                name: '/register',
-                page: () => const Register1Screen(),
-                binding: OutsideBindings(),
-                transition: Transition.rightToLeftWithFade),
+
             GetPage(
               name: '/otp_screen',
               page: () => const OTPScreen(),

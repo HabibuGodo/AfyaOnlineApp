@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutkit/loading_effect.dart';
-import 'package:flutkit/src/controllers/chat_controller.dart';
+import 'package:flutkit/src/controllers/chats/chat_controller.dart';
 import 'package:flutkit/src/models/user_model.dart';
 import 'package:flutkit/theme/constant.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,6 @@ class UserListScreen extends GetView<ChatController> {
     for (UserModel user in controller.allUser) {
       list.add(_buildSingleUser(user));
     }
-    log(list.toString());
     return list;
   }
 
@@ -28,7 +27,7 @@ class UserListScreen extends GetView<ChatController> {
     return FxContainer(
       onTap: () {
         Get.toNamed('/single_chat', arguments: {
-          'receiverId': user.id,
+          'otherUserId': user.id,
           'receiverName': user.name,
           'checkRoute': "single"
         });

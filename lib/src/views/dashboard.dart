@@ -1,16 +1,19 @@
+import 'package:badges/badges.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../componets/shared_function.controller.dart';
+import '../controllers/chats/global.dart';
 import '../controllers/dashboard_controller.dart';
 import '../services/local_storage.dart';
 // import 'explore_screen.dart';
 import 'chats/group_list_screen.dart';
 import 'chats/chats_landpage.dart';
+import 'chats/single_chat_screen.dart';
+import 'chats/single_user_convo_list.dart';
 import 'download_screen.dart';
 import 'home_screen.dart';
-import 'my_items.dart';
-import 'myfavorite.dart';
 import 'profile_screen.dart';
 
 class Dashboard extends GetView<DashboardController> {
@@ -19,16 +22,14 @@ class Dashboard extends GetView<DashboardController> {
   Widget _widgetOptions(int index) {
     switch (controller.currentIndex.value) {
       case 0:
-        // return Get.toNamed('/home');
-        return HomeScreen();
-      // case 1:
-      //   return authData.read('role') == "Dalali" ? MyItems() : MyFavorite();
+        return SingleUserConvoListScreen();
       case 1:
-        return AllChats();
-      // return ChatScreen();
+        return HomeScreen();
       case 2:
-        return DownloadScreen();
+        return GroupListScreen();
       case 3:
+        return DownloadScreen();
+      case 4:
         return ProfileScreen();
       default:
         return HomeScreen();
@@ -45,8 +46,23 @@ class Dashboard extends GetView<DashboardController> {
               backgroundColor: Colors.white,
               items: [
                 BottomNavigationBarItem(
+                  icon: Global.totalUnreadAllConvo.value == 0
+                      ? Icon(CupertinoIcons.chat_bubble_2)
+                      : Badge(
+                          badgeContent: Obx(
+                            () => Text(
+                              Global.totalUnreadAllConvo.value.toString(),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                            ),
+                          ),
+                          child: Icon(CupertinoIcons.chat_bubble_2),
+                        ),
+                  label: 'Chat',
+                ),
+                BottomNavigationBarItem(
                   icon: Icon(Icons.feed),
-                  label: 'Feeds',
+                  label: 'Share',
                 ),
                 // authData.read('role') == "Dalali"
                 //     ? BottomNavigationBarItem(
@@ -58,8 +74,8 @@ class Dashboard extends GetView<DashboardController> {
                 //         label: 'My Favorite',
                 //       ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.chat),
-                  label: 'Chat',
+                  icon: Icon(Icons.group),
+                  label: 'Groups',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.download),

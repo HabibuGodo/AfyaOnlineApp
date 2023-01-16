@@ -1,5 +1,4 @@
 import 'package:flutkit/src/controllers/login_controller.dart';
-import 'package:flutkit/src/controllers/register_controller.dart';
 import 'package:get/get.dart';
 
 import '../controllers/login_otp_controller.dart';
@@ -12,9 +11,7 @@ class OutsideBindings extends Bindings {
       () => LogInController(),
     );
 
-    Get.lazyPut<RegisterController>(
-      () => RegisterController(),
-    );
+
 
     Get.lazyPut<OTPController>(
       () => OTPController(),

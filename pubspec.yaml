@@ -85,6 +85,7 @@ dependencies:
   permission_handler: ^8.0.0+2
   percent_indicator: ^4.0.1
   open_file: ^3.2.1
+  badges: ^2.0.3
   
 
 

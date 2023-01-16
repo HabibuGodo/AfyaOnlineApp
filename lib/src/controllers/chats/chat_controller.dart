@@ -7,15 +7,17 @@ import 'package:flutkit/src/models/group_model.dart';
 import 'package:flutkit/src/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutx/flutx.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
-import '../../theme/app_theme.dart';
-import '../../theme/constant.dart';
-import '../models/chat.dart';
-import '../services/base_service.dart';
-import '../services/local_storage.dart';
+import '../../../theme/app_theme.dart';
+import '../../../theme/constant.dart';
+import '../../models/chat.dart';
+import '../../models/message_model.dart';
+import '../../models/single_message_model.dart';
+import '../../services/base_service.dart';
+import '../../services/local_storage.dart';
+import 'global.dart';
 
 class ChatController extends GetxController {
   var showLoading = true.obs, uiLoading = true.obs;
@@ -23,6 +25,7 @@ class ChatController extends GetxController {
   final addGroupKey = GlobalKey<FormState>().obs;
   late TextEditingController groupNameTE;
   var groupName = ''.obs;
+  var totalUnreadAllConvo = 0.obs;
 
   late ThemeData theme;
   var groups = <GroupModel>[].obs;
@@ -38,7 +41,6 @@ class ChatController extends GetxController {
   @override
   void onInit() {
     groupNameTE = TextEditingController();
-    fetchData();
     theme = AppTheme.communityTBTheme;
     outlineInputBorder = OutlineInputBorder(
       borderRadius:
@@ -49,7 +51,7 @@ class ChatController extends GetxController {
     );
     userId = authData.read("user_id");
     getGroups();
-    getConvoList();
+    getSingleConvoList();
     getUserList();
     super.onInit();
   }
@@ -75,16 +77,6 @@ class ChatController extends GetxController {
       addGroupKey.value.currentState!.save();
       validated1.value = true;
     }
-  }
-
-  void fetchData() async {
-    await Future.delayed(Duration(seconds: 1));
-
-    chats.value = await Chat.getDummyList();
-
-    showLoading.value = false;
-    uiLoading.value = false;
-    update();
   }
 
   void filterGroupList(String value) {
@@ -182,6 +174,7 @@ class ChatController extends GetxController {
         groups.value = (dataEx).map((e) => GroupModel.fromMap(e)).toList().obs;
 
         groupsTemList.value = List.from(groups);
+        getAllGroupChatMessages(userId);
         EasyLoading.dismiss();
       } else {
         return;
@@ -196,13 +189,53 @@ class ChatController extends GetxController {
     }
   }
 
-  //======================Single chat Convo List
-  Future<void> getConvoList() async {
+  // fetch group chat all message
+  Future<void> getAllGroupChatMessages(var myId) async {
     showLoading.value = true;
     uiLoading.value = true;
     try {
       // categories.value = Category.categoryList();
 
+      Dio dio = Dio();
+
+      DioCacheManager _dioCacheManager = DioCacheManager(CacheConfig());
+      Options cacheOptions = buildCacheOptions(Duration(days: 30),
+          forceRefresh: true,
+          options: Options(extra: {"context": "all_messages"}));
+      dio.interceptors.add(_dioCacheManager.interceptor);
+
+      final response = await dio.get(
+        '$baseURL/allMygroupsMessagess/$myId',
+        options: cacheOptions,
+      );
+
+      if (response.statusCode == 200) {
+        var jsonResponse = response.data['data'];
+
+        List<dynamic> dataEx = jsonResponse;
+
+        Global.groupChat.value =
+            (dataEx).map((e) => MessageModel.fromMap(e)).toList().obs;
+
+        EasyLoading.dismiss();
+      } else {
+        return;
+      }
+    } catch (e) {
+      log("errrr1 ${e.toString()}");
+    } finally {
+      showLoading.value = false;
+      uiLoading.value = false;
+    }
+  }
+
+//=======================================SINGLE CHAT============================
+
+  //======================Single chat Convo List
+  Future<void> getSingleConvoList() async {
+    showLoading.value = true;
+    uiLoading.value = true;
+    try {
       Dio dio = Dio();
 
       DioCacheManager _dioCacheManager = DioCacheManager(CacheConfig());
@@ -217,10 +250,8 @@ class ChatController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        // decode response to observable list
-        // log(response.data);
         var jsonResponse = response.data['data'];
-
+        Global.totalUnreadAllConvo.value = response.data['totalUnreadAllConvo'];
         List<dynamic> dataEx = jsonResponse;
 
         allConvo.value =
@@ -228,6 +259,7 @@ class ChatController extends GetxController {
 
         allConvoTemList.value = List.from(allConvo);
 
+        getSingleChatMessage(userId);
         EasyLoading.dismiss();
       } else {
         return;
@@ -236,6 +268,109 @@ class ChatController extends GetxController {
       // }
     } catch (e) {
       log("errrroo ${e.toString()}");
+    } finally {
+      showLoading.value = false;
+      uiLoading.value = false;
+    }
+  }
+
+  Stream<List<dynamic>> getConvoListStream() async* {
+    while (true) {
+      await Future.delayed(Duration(milliseconds: 500));
+
+      try {
+        // categories.value = Category.categoryList();
+
+        Dio dio = Dio();
+        DioCacheManager _dioCacheManager = DioCacheManager(CacheConfig());
+        Options cacheOptions = buildCacheOptions(Duration(days: 30),
+            forceRefresh: true,
+            options: Options(extra: {"context": "all_convo"}));
+        dio.interceptors.add(_dioCacheManager.interceptor);
+
+        final response = await dio.get(
+          '$baseURL/conversations/$userId',
+          options: cacheOptions,
+        );
+        if (response.statusCode == 200) {
+          // decode response to observable list
+          // log(response.data);
+          var jsonResponse = response.data['data'];
+          Global.totalUnreadAllConvo.value =
+              response.data['totalUnreadAllConvo'];
+
+          List<dynamic> dataEx = jsonResponse;
+
+          // allConvo.value =
+          //     (dataEx).map((e) => CoversatationModel.fromMap(e)).toList().obs;
+          // allConvoTemList.value = List.from(allConvo);
+          var myList = List.from(allConvo);
+          getSingleChatMessage(userId);
+          yield myList;
+        } else {
+          return;
+        }
+      } catch (e) {
+        log("errrroo2 ${e.toString()}");
+      } finally {
+        showLoading.value = false;
+        uiLoading.value = false;
+      }
+    }
+  }
+
+  //filter convo list
+  void filterConvoList(String value) {
+    print(value);
+    if (value.isNotEmpty) {
+      allConvo.value = allConvoTemList
+          .where((element) =>
+              element.receiverName!.toLowerCase().contains(value.toLowerCase()))
+          .toList()
+          .obs;
+      print(allConvo);
+    } else {
+      allConvo.value = List.from(allConvoTemList);
+
+      allConvo.sort((a, b) => a.receiverName!.compareTo(b.receiverName!));
+    }
+  }
+
+  //======================Single chat Message List
+  // fetch group chat all message
+  Future<void> getSingleChatMessage(var myId) async {
+    showLoading.value = true;
+    uiLoading.value = true;
+    try {
+      // categories.value = Category.categoryList();
+
+      Dio dio = Dio();
+
+      DioCacheManager _dioCacheManager = DioCacheManager(CacheConfig());
+      Options cacheOptions = buildCacheOptions(Duration(days: 30),
+          forceRefresh: true,
+          options: Options(extra: {"context": "all_messages"}));
+      dio.interceptors.add(_dioCacheManager.interceptor);
+
+      final response = await dio.get(
+        '$baseURL/messagesAllInbox/$myId',
+        options: cacheOptions,
+      );
+
+      if (response.statusCode == 200) {
+        var jsonResponse = response.data['data'];
+
+        List<dynamic> dataEx = jsonResponse;
+
+        Global.singleChat.value =
+            (dataEx).map((e) => SingleMessageModel.fromMap(e)).toList().obs;
+
+        EasyLoading.dismiss();
+      } else {
+        return;
+      }
+    } catch (e) {
+      log("er ${e.toString()}");
     } finally {
       showLoading.value = false;
       uiLoading.value = false;
@@ -272,7 +407,6 @@ class ChatController extends GetxController {
         allUser.value = (dataEx).map((e) => UserModel.fromMap(e)).toList().obs;
 
         allUserTemList.value = List.from(allUser);
-        log(allUser.toString());
         EasyLoading.dismiss();
       } else {
         return;
