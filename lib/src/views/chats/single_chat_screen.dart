@@ -49,7 +49,7 @@ class SingleChatScreen extends GetView<AllInsideChatController> {
                     width: 10,
                   ),
                   FxText.bodyMedium(
-                    controller.receiverName,
+                    controller.receiverName ?? "",
                     color: controller.theme.colorScheme.primary,
                     fontWeight: 900,
                     fontSize: 15,

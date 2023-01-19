@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutkit/src/controllers/chats/global.dart';
 import 'package:flutkit/src/models/single_message_model.dart';
+import 'package:flutkit/src/models/user_model.dart';
 import 'package:flutkit/src/services/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -14,6 +15,7 @@ import 'package:get/get.dart';
 
 import '../../../theme/app_theme.dart';
 import '../../models/message_model.dart';
+import '../../services/LocalNotificationReceiverService.dart';
 import '../../services/base_service.dart';
 
 class AllInsideChatController extends GetxController {
@@ -21,11 +23,13 @@ class AllInsideChatController extends GetxController {
   var messageInput = ''.obs;
   late TextEditingController messageInputTE;
 
+
   late var groupId;
   late var receiverId;
   late var groupName;
   late var receiverName;
   late var checkRoute;
+  late var firebaseToken;
 
   // late Chat chat;
   late ThemeData theme;
@@ -40,6 +44,7 @@ class AllInsideChatController extends GetxController {
     if (checkRoute == 'single') {
       receiverId = Get.arguments['otherUserId'];
       receiverName = Get.arguments['receiverName'];
+      firebaseToken = Get.arguments['firebaseToken'];
       filterSingleChatMessage(receiverId);
     } else {
       groupId = Get.arguments['groupId'];
@@ -76,6 +81,8 @@ class AllInsideChatController extends GetxController {
         .obs;
   }
 
+
+
 //=========================send group message
   void sendMessage() async {
     try {
@@ -87,7 +94,7 @@ class AllInsideChatController extends GetxController {
       }, headers: {
         "Accept": "application/json"
       });
-      log(response.body);
+
       if (response.body.contains("success")) {
         // getChatMessage(groupId);
         messageInputTE.clear();
@@ -136,8 +143,26 @@ class AllInsideChatController extends GetxController {
         "Accept": "application/json"
       });
 
-      log(response.body);
       if (response.body.contains("success")) {
+        var payloadData = {
+          'title': 'New Message',
+          'body': messageInput.value.toString(),
+          'senderId': senderId.toString(),
+          'senderName': authData.read('name').toString(),
+          'senderProfile': authData.read('profile_image'),
+          'senderFirebaseToken': authData.read('firebaseToken'),
+          'checkRoute': 'single',
+          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+          'sound': 'default',
+          'vibrate': true,
+          'enableLights': true,
+        };
+
+//send notification=============================================================
+        await LocalNotificationService.send_push_notification(firebaseToken,
+            'New Message', payloadData, messageInput.value.toString());
+//==============================================================================
+
         // getChatMessage(groupId);
         messageInputTE.clear();
         messageInput.value = '';

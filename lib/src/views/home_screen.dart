@@ -1,6 +1,7 @@
-import 'package:flutkit/src/models/items_model.dart';
+import 'package:flutkit/assets.dart';
 import 'package:flutkit/src/models/newsfeed_model.dart';
 import 'package:flutkit/src/services/local_storage.dart';
+import 'package:flutkit/src/views/resources/preview_doc.dart';
 import 'package:flutkit/theme/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
@@ -9,9 +10,6 @@ import 'package:flutkit/theme/app_theme.dart';
 import 'package:get/get.dart';
 
 import '../controllers/share_controller.dart';
-import '../models/categories_model.dart';
-import '../models/category.dart';
-import '../models/house.dart';
 import '../services/base_service.dart';
 
 class HomeScreen extends GetView<ShareController> {
@@ -63,17 +61,16 @@ class HomeScreen extends GetView<ShareController> {
       borderRadiusAll: Constant.containerRadius.medium,
       child: Column(
         children: [
-          Image(
-            image: news.image!.isEmpty
-                ? AssetImage("assets/images/apps/estate/estate7.jpg")
-                    as ImageProvider
-                : NetworkImage(
+          news.image.isEmpty
+              ? Container()
+              : Image(
+                  image: NetworkImage(
                     "$imageURL${news.image}",
                   ),
-            fit: BoxFit.cover,
-            height: 250,
-            width: double.infinity,
-          ),
+                  fit: BoxFit.cover,
+                  height: 250,
+                  width: double.infinity,
+                ),
           FxContainer(
             paddingAll: 16,
             // color: controller.theme.primaryColor.withOpacity(0.8),
@@ -86,7 +83,7 @@ class HomeScreen extends GetView<ShareController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     FxText.bodyLarge(
-                      news.title!.capitalizeFirst!,
+                      news.title.capitalizeFirst!,
                       fontWeight: 900,
                       // color: controller.theme.colorScheme.onPrimary,
                     ),
@@ -108,7 +105,7 @@ class HomeScreen extends GetView<ShareController> {
                         children: [
                           Expanded(
                             child: FxText.bodyMedium(
-                              news.description!.capitalizeFirst!,
+                              news.description.capitalizeFirst!,
                               // color: controller.theme.colorScheme.onPrimary,
                               fontSize: 15,
                               maxLines: 50,
@@ -121,6 +118,65 @@ class HomeScreen extends GetView<ShareController> {
                   ],
                 ),
                 FxSpacing.height(8),
+                news.file == null || news.file == ''
+                    ? Container()
+                    : Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  spreadRadius: 0,
+                                  blurRadius: 1,
+                                  offset: const Offset(0, 0))
+                            ]),
+                        child: ListTile(
+                          onTap: () {
+                            // print file path
+                            // print(controller.notesList[index].file);
+
+                            var base = imageURL.trim();
+
+                            var filePath = base + news.file;
+
+                            // print(filePath);
+
+                            // Get.to(() => ViewPdfFiles(
+                            //     path: filePath, fileName: "Sample2"));
+
+                            // Get.to(() => PDFReader(
+                            //       path: filePath,
+                            //     ));
+
+                            Get.to(() => PDFViewerCachedFromUrl(
+                                  url: filePath,
+                                  name: news.title.toString(),
+                                ));
+
+                            // // split file path
+                            // var file = controller
+                            //     .semi1assignmentList[index].file
+                            //     .split('/');
+                            // // print file name
+                            // print(file[file.length - 1]);
+                          },
+                          // leadung image
+                          leading: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                image: const DecorationImage(
+                                    image: AssetImage(file),
+                                    fit: BoxFit.cover)),
+                          ),
+
+                          title: Text("Attachment"),
+                          // subtitle: const Text('Uploaded on 2021-05-05'),
+                        ),
+                      )
               ],
             ),
           ),

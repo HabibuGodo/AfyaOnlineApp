@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 import '../../theme/app_theme.dart';
 import '../services/base_service.dart';
+import 'chats/global.dart';
 
 class LoginOTPController extends GetxController {
   // count down timer
@@ -89,7 +90,6 @@ class LoginOTPController extends GetxController {
           Get.snackbar('Success', 'OTP verified successfully',
               backgroundColor: Colors.green, colorText: Colors.white);
 
-
           authData.write('user_id', jsonResponse['user']['id']);
           authData.write('name', jsonResponse['user']['name']);
           authData.write('phone', jsonResponse['user']['phone']);
@@ -99,8 +99,17 @@ class LoginOTPController extends GetxController {
           authData.write(
               'profile_image', jsonResponse['user']['profile_image']);
 
-          // authData.write('token', jsonResponse['token']);
+          if (jsonResponse['user']['firebaseToken'] == null) {
+            Global.saveFirebaseToken();
+          } else {
+            // firebaseToken
+            authData.write(
+                'firebaseToken', jsonResponse['user']['firebaseToken']);
+          }
 
+          // authData.write('token', jsonResponse['token']);
+          Global.verifyUser(
+              jsonResponse['user']['email'], jsonResponse['user']['email']);
           pageBox.write('isLogged', true);
 
           Get.offAllNamed('/home');

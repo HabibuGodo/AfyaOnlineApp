@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (title == 'Share App') {
           //Share app link
           String link =
-              'https://play.google.com/store/apps/details?id=community.tb';
+              'https://play.google.com/store/apps/details?id=afya.ho.online';
 
           await FlutterShare.share(
             title: 'ReconSpots',
@@ -194,9 +194,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontWeight: 600,
             xMuted: true,
           ),
-          FxSpacing.height(24),
-          _buildSingleRow(title: 'Edit Profile', icon: FeatherIcons.edit),
-          FxSpacing.height(8),
+          // FxSpacing.height(24),
+          // _buildSingleRow(title: 'Edit Profile', icon: FeatherIcons.edit),
+          // FxSpacing.height(8),
           // Divider(),
           // FxSpacing.height(8),
           // _buildSingleRow(title: 'Change Password', icon: FeatherIcons.edit2),
@@ -212,6 +212,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Divider(),
           FxSpacing.height(8),
           _buildSingleRow(title: 'Logout', icon: FeatherIcons.logOut),
+          FxSpacing.height(8),
+          Divider(),
         ],
       );
     }

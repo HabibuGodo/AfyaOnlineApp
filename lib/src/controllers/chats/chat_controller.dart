@@ -241,7 +241,7 @@ class ChatController extends GetxController {
       DioCacheManager _dioCacheManager = DioCacheManager(CacheConfig());
       Options cacheOptions = buildCacheOptions(Duration(days: 30),
           forceRefresh: true,
-          options: Options(extra: {"context": "all_groups"}));
+          options: Options(extra: {"context": "all_userConvo"}));
       dio.interceptors.add(_dioCacheManager.interceptor);
 
       final response = await dio.get(

@@ -6,3 +6,6 @@
 // Create consntant for base url
 const String baseURL = "http://67.205.147.34/api";
 const String imageURL = "http://67.205.147.34/";
+
+const firebaseServerKey =
+    "AAAAIwy7LE8:APA91bFA7XJCIxsqHx_kgsnBFqgxKebypH2CM1mWMXYcDHXnisXOwybvVGKrXECm9YtqPX8ogMJkQnLgc_vamDeKZX6lA11mAOQASkdPWrk2DfuhC-3wZEQjnuBnNPiRC78NMup_Q5SG";

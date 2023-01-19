@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "150537448527",
+    "project_id": "afya-ho",
+    "storage_bucket": "afya-ho.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150537448527:android:992cd9ca53151c022c8e3a",
+        "android_client_info": {
+          "package_name": "afya.ho.online"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150537448527-26lpl0r20rtn40bpkf7uh796842h504v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6O8j-P1eyheqGZXmQtjxgkG5ZcBkAGn0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150537448527-26lpl0r20rtn40bpkf7uh796842h504v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

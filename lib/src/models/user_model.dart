@@ -12,6 +12,8 @@ class UserModel {
     required this.roleId,
     required this.createdAt,
     required this.updatedAt,
+    required this.firebaseToken,
+    required this.isUserSelected,
   });
 
   int? id;
@@ -26,6 +28,8 @@ class UserModel {
   int? roleId;
   DateTime? createdAt;
   DateTime? updatedAt;
+  String? firebaseToken;
+  bool isUserSelected;
 
   factory UserModel.fromMap(Map<String, dynamic> json) => UserModel(
         id: json["id"],
@@ -40,6 +44,8 @@ class UserModel {
         roleId: json["role_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        firebaseToken: json["firebaseToken"],
+        isUserSelected: false,
       );
 
   Map<String, dynamic> toMap() => {
@@ -55,5 +61,7 @@ class UserModel {
         "role_id": roleId,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
+        "firebaseToken": firebaseToken,
+        "isUserSelected": isUserSelected,
       };
 }

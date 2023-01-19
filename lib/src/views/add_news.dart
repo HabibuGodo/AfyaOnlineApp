@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:flutkit/src/models/categories_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
 import 'package:image_pickers/image_pickers.dart';
 
 import '../../../theme/constant.dart';
-import '../controllers/add_item_controller.dart';
+import '../../assets.dart';
+import '../controllers/add_newsfeed_controller.dart';
 
-class AddItemScreen extends GetView<AddItemController> {
-  const AddItemScreen({key});
+class AddNewsScreen extends GetView<AddINewsController> {
+  const AddNewsScreen({key});
 
   @override
   Widget build(BuildContext context) {
@@ -148,16 +148,92 @@ class AddItemScreen extends GetView<AddItemController> {
               ],
             ),
             FxSpacing.height(20),
+            Obx(() => controller.notesFile.value == ""
+                ? Container()
+                : Container(
+                    decoration: BoxDecoration(
+                        color: Colors.green.withAlpha(30),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: 0,
+                              blurRadius: 1,
+                              offset: const Offset(0, 0))
+                        ]),
+                    child: ListTile(
+                      leading: Image(
+                        image: AssetImage(
+                            // check file type and show icon
+
+                            controller.notesFile.value.contains('.pdf')
+                                ? pdf
+                                : controller.notesFile.value.contains('.doc')
+                                    ? word
+                                    : controller.notesFile.value
+                                            .contains('.docx')
+                                        ? word
+                                        : controller.notesFile.value
+                                                .contains('.ppt')
+                                            ? ppt
+                                            : controller.notesFile.value
+                                                    .contains('.pptx')
+                                                ? ppt
+                                                : controller.notesFile.value
+                                                        .contains('.xls')
+                                                    ? excel
+                                                    : controller.notesFile.value
+                                                            .contains('.xlsx')
+                                                        ? excel
+                                                        : controller
+                                                                .notesFile.value
+                                                                .contains(
+                                                                    '.txt')
+                                                            ? file
+                                                            : file),
+                      ),
+                      title: Text(controller.notesFile.value.split('/').last),
+                      subtitle: Text(
+                        '${controller.fileSize.value} MB',
+                      ),
+                    ),
+                  )),
+            FxSpacing.height(10),
+            Container(
+              width: double.infinity,
+              height: 45,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary:
+                      controller.theme.colorScheme.primary.withOpacity(0.5),
+                  onPrimary: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+                onPressed: () {
+                  // pick file here
+                  controller.pickFile();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.link),
+                    Text(' Attach Document'),
+                  ],
+                ),
+              ),
+            ),
+            FxSpacing.height(30),
             FxButton.block(
               elevation: 0,
               borderRadiusAll: Constant.buttonRadius.large,
               onPressed: () {
                 controller.checkValidation1();
                 if (controller.validated1.value == true) {
-                  // Get.toNamed('/add_item_location');
-                  // controller.postPhoneNumber();
                   controller.validated1.value = true;
-                  controller.postProduct();
+                  controller.postNews();
                 }
               },
               splashColor: controller.theme.colorScheme.onPrimary.withAlpha(30),

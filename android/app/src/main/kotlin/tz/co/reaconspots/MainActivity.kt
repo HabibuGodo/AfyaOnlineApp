@@ -1,4 +1,4 @@
-package community.tb
+package afya.ho.online
 
 import io.flutter.embedding.android.FlutterActivity
 

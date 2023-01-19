@@ -48,36 +48,54 @@ class GroupChatScreen extends GetView<AllInsideChatController> {
     // } else {
     return Column(
       children: [
-        FxContainer(
-          color: controller.theme.scaffoldBackgroundColor,
-          child: Row(
-            children: [
-              InkWell(
-                child: Icon(
-                  Icons.arrow_back_ios,
-                  size: 20,
-                  color: controller.theme.colorScheme.onBackground,
-                ),
-                onTap: () {
-                  // Navigator.pop(context);
-                  Get.back();
-                },
-              ),
-              FxSpacing.width(12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FxText.bodyMedium(
-                      controller.groupName,
-                      fontWeight: 900,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FxContainer(
+              color: controller.theme.scaffoldBackgroundColor,
+              child: Row(
+                children: [
+                  InkWell(
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      size: 20,
+                      color: controller.theme.colorScheme.onBackground,
                     ),
-                  ],
-                ),
+                    onTap: () {
+                      // Navigator.pop(context);
+                      Get.back();
+                    },
+                  ),
+                  FxSpacing.width(12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FxText.bodyMedium(
+                        controller.groupName,
+                        fontWeight: 900,
+                      ),
+                    ],
+                  ),
+                  FxSpacing.width(20),
+                ],
               ),
-              FxSpacing.width(20),
-            ],
-          ),
+            ),
+            Container(
+              margin: FxSpacing.right(16),
+              child: IconButton(
+                  onPressed: () {
+                    Get.toNamed("/adduser-to-group", arguments: {
+                      "groupId": controller.groupId,
+                      'groupName': controller.groupName,
+                    });
+                  },
+                  icon: Icon(
+                    FeatherIcons.plusCircle,
+                    size: 26,
+                    color: controller.theme.colorScheme.primary,
+                  )),
+            )
+          ],
         ),
         Expanded(
           child: StreamBuilder(
@@ -86,10 +104,10 @@ class GroupChatScreen extends GetView<AllInsideChatController> {
                 if (snapshot.hasData) {
                   if (Global.groupChat.length == 0) {
                     return Container(
-                      margin: FxSpacing.top(200),
+                      margin: FxSpacing.top(50),
                       child: Center(
                         child: FxText.sh1(
-                          "No any message",
+                          "No any message in this group.",
                           color: controller.theme.colorScheme.onBackground,
                           textAlign: TextAlign.center,
                         ),
@@ -133,7 +151,7 @@ class GroupChatScreen extends GetView<AllInsideChatController> {
                                     Align(
                                       alignment: Alignment.centerLeft,
                                       child: FxContainer(
-                                        color: Color(0xFFe2ffc7),
+                                        color: Color(0xFFf5f5f7),
                                         margin: FxSpacing.right(140),
                                         borderRadius: BorderRadius.only(
                                             topRight: Radius.circular(Constant
@@ -150,17 +168,17 @@ class GroupChatScreen extends GetView<AllInsideChatController> {
                                           children: [
                                             FxText.bodySmall(
                                               Global.groupChat[index].message!,
-                                              color: controller
-                                                  .theme.colorScheme.onPrimary,
-                                              xMuted: true,
+                                              // color: controller
+                                              //     .theme.colorScheme.onPrimary,
+                                              // xMuted: true,
                                             ),
                                             Align(
                                               alignment: Alignment.centerRight,
                                               child: FxText.bodySmall(
                                                 dateToShow.toString(),
                                                 fontSize: 10,
-                                                color: controller.theme
-                                                    .colorScheme.onPrimary,
+                                                // color: controller.theme
+                                                //     .colorScheme.onPrimary,
                                                 xMuted: true,
                                               ),
                                             ),
@@ -183,7 +201,7 @@ class GroupChatScreen extends GetView<AllInsideChatController> {
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: FxContainer(
-                                        color: Color(0xFFf5f5f7),
+                                        color: Color(0xFFe2ffc7),
                                         margin: FxSpacing.left(140),
                                         borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(Constant
@@ -200,8 +218,8 @@ class GroupChatScreen extends GetView<AllInsideChatController> {
                                           children: [
                                             FxText.bodySmall(
                                               Global.groupChat[index].message!,
-                                              color: controller
-                                                  .theme.colorScheme.onPrimary,
+                                              // color: controller
+                                              //     .theme.colorScheme.onPrimary,
                                             ),
                                             Align(
                                               alignment: Alignment.centerRight,

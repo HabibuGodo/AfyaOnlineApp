@@ -1,8 +1,13 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutkit/src/services/local_storage.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 import '../../models/message_model.dart';
 import '../../models/single_message_model.dart';
@@ -14,6 +19,7 @@ class Global {
   static var groupChat = <MessageModel>[].obs;
   static var groupChatTemp = <MessageModel>[].obs;
   static var totalUnreadAllConvo = 0.obs;
+  static FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   static Stream<List<dynamic>> fetchSinglesms(var myId, var receiverId) async* {
     while (true) {
@@ -98,5 +104,55 @@ class Global {
         log("err1 ${e.toString()}");
       }
     }
+  }
+
+  static void verifyUser(String emailAddress, String password) async {
+    try {
+      firebaseAuth.signOut();
+      await firebaseAuth.signInWithEmailAndPassword(
+          email: emailAddress, password: password);
+      log("userId");
+      saveFirebaseToken();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        await firebaseAuth.createUserWithEmailAndPassword(
+          email: emailAddress,
+          password: password,
+        );
+        log("1userId");
+        saveFirebaseToken();
+      }
+    }
+  }
+
+  //save firebase token
+  static Future saveFirebaseToken() async {
+    var userId = authData.read("user_id");
+
+    await FirebaseMessaging.instance.getToken().then((token) async {
+      final tokenStr = token.toString();
+
+      if (tokenStr.isNotEmpty) {
+        // firebaseToken
+        authData.write('firebaseToken', tokenStr);
+        //save token
+        try {
+          var response =
+              await http.post(Uri.parse('$baseURL/updateFirebaseToken'), body: {
+            'userId': userId.toString(),
+            'firebaseToken': tokenStr,
+          }, headers: {
+            'Accept': 'application/json'
+          });
+          log(response.body);
+          if (response.statusCode == 200) {
+            var data = json.decode(response.body);
+            print(data);
+          }
+        } catch (e) {
+          print(e);
+        }
+      }
+    });
   }
 }

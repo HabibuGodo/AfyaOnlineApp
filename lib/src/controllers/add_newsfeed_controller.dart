@@ -5,24 +5,20 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutkit/src/models/newsfeed_model.dart';
-import 'package:flutkit/src/models/regions_model.dart';
 import 'package:flutkit/src/services/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-// import 'package:image_cropper/image_cropper.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:image_pickers/image_pickers.dart';
 
 import '../../theme/app_theme.dart';
 import '../../theme/constant.dart';
-import '../models/categories_model.dart';
-import '../models/items_model.dart';
-import '../models/uploadImageModel.dart';
 import '../services/base_service.dart';
 
-class AddItemController extends GetxController {
+class AddINewsController extends GetxController {
   final addItemKey = GlobalKey<FormState>().obs;
 
   var showLoading = true.obs, uiLoading = true.obs;
@@ -39,10 +35,14 @@ class AddItemController extends GetxController {
   var newsTitle = ''.obs;
   var description = ''.obs;
 
+  var notesFile = " ".obs;
+  var fileSize = ''.obs;
+
   var validated1 = false.obs;
 
   @override
   void onInit() {
+    notesFile.value = "";
     titleTE = TextEditingController();
     descriptionTE = TextEditingController();
 
@@ -89,6 +89,61 @@ class AddItemController extends GetxController {
     }
   }
 
+  // pick file from device
+  Future<void> pickFile() async {
+    // ask for permission
+    FilePickerResult? file = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: [
+        'pdf',
+        'doc',
+        'docx',
+        'ppt',
+        'pptx',
+        'txt',
+        'xls',
+        'xlsx'
+      ],
+    );
+    // check file extension
+    if (file != null) {
+      // check file allowedExtensions is pdf, xls, xlsx, doc, docx
+      if (file.files.single.extension != 'pdf' &&
+          file.files.single.extension != 'doc' &&
+          file.files.single.extension != 'docx' &&
+          file.files.single.extension != 'ppt' &&
+          file.files.single.extension != 'pptx' &&
+          file.files.single.extension != 'txt' &&
+          file.files.single.extension != 'xls' &&
+          file.files.single.extension != 'xlsx') {
+        Get.snackbar('Error', 'File type not allowed',
+            backgroundColor: Colors.red,
+            colorText: theme.colorScheme.onPrimary,
+            snackPosition: SnackPosition.TOP);
+      } else {
+        // file size in KB
+        var size = file.files.single.size / 1024;
+        // file size in MB
+        var sizeInMB = (size / 1024);
+
+        if (sizeInMB > 10) {
+          Get.snackbar('File size', 'File size should be less than 5MB',
+              backgroundColor: Colors.red,
+              colorText: theme.colorScheme.onPrimary,
+              snackPosition: SnackPosition.TOP);
+        } else {
+          notesFile.value = file.files.single.path.toString();
+        }
+        // convers double to string
+        fileSize = (sizeInMB).toStringAsFixed(2).obs;
+      }
+    } else {
+      Get.snackbar('Not Attached', 'You have not Selected any File',
+          snackPosition: SnackPosition.TOP);
+    }
+    // notesFile.value = file.path;
+  }
+
   // fetch all News feed
   Future<void> getNewsFeeds() async {
     try {
@@ -96,7 +151,7 @@ class AddItemController extends GetxController {
       DioCacheManager _dioCacheManager = DioCacheManager(CacheConfig());
       Options cacheOptions = buildCacheOptions(Duration(days: 30),
           forceRefresh: true,
-          options: Options(extra: {"context": "all_categories"}));
+          options: Options(extra: {"context": "all_newsfeed"}));
       dio.options.headers["Content-Type"] = 'application/json';
       dio.interceptors.add(_dioCacheManager.interceptor);
 
@@ -118,7 +173,7 @@ class AddItemController extends GetxController {
     }
   }
 
-  Future<void> postProduct() async {
+  Future<void> postNews() async {
     try {
       var request =
           http.MultipartRequest('POST', Uri.parse('$baseURL/createFeed'));
@@ -126,26 +181,37 @@ class AddItemController extends GetxController {
       request.fields['description'] = description.value.toString();
       request.fields['userId'] = authData.read('user_id').toString();
       request.fields['image'] = myPhoto1.value;
+      request.fields['file'] = notesFile.value;
+      request.headers['Accept'] = 'application/json';
 
-      // request.files
-      //     .add(await http.MultipartFile.fromPath('image', myPhoto1.value));
+      if (myPhoto1.value != '') {
+        final File _file = File(myPhoto1.value);
+        request.files.add(
+          http.MultipartFile(
+            'image',
+            _file.readAsBytes().asStream(),
+            _file.lengthSync(),
+            filename: _file.path.split('/').last,
+          ),
+        );
+      } else {}
 
-      final File _file = File(myPhoto1.value);
+      if (notesFile.value != '') {
+        final File attachment = File(notesFile.value);
 
-      request.files.add(
-        http.MultipartFile(
-          'image',
-          _file.readAsBytes().asStream(),
-          _file.lengthSync(),
-          filename: _file.path.split('/').last,
-        ),
-      );
+        request.files.add(http.MultipartFile(
+          'file',
+          attachment.readAsBytes().asStream(),
+          attachment.lengthSync(),
+          filename: attachment.path.split('/').last,
+        ));
+      }
+
       var response = await request.send();
       var data = await http.Response.fromStream(response);
 
       if (response.statusCode == 200) {
         var jsonResponse = convert.jsonDecode(data.body);
-        log(jsonResponse.toString());
 
         // snackbar
         Get.snackbar('Posted!', 'Successfully Posted News Feed!',
@@ -156,8 +222,7 @@ class AddItemController extends GetxController {
               Icons.check_circle,
               color: Colors.white,
             ));
-        // getNewsFeeds();
-        newsFeeds.refresh();
+        getNewsFeeds();
         Get.offAndToNamed('/home');
         EasyLoading.dismiss();
       }
