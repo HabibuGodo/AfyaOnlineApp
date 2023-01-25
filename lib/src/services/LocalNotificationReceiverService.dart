@@ -1,4 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
+
+import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutkit/src/services/base_service.dart';
@@ -41,10 +43,9 @@ class LocalNotificationService {
 
   static Future<dynamic> send_push_notification(
       String peerToken, String title, dynamic payloadData, String body) async {
-    print(payloadData);
     var headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Key=${firebaseServerKey}'
+      'Authorization': 'Key=$firebaseServerKey'
     };
     var request =
         http.Request('POST', Uri.parse('https://fcm.googleapis.com/fcm/send'));
@@ -58,10 +59,10 @@ class LocalNotificationService {
       },
       "data": payloadData
     });
+
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
-
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
     } else {

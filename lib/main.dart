@@ -90,8 +90,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print("App has been opened from notification");
-      if (message.data['type'] == 'single') {
+      if (message.data['checkRoute'] == 'single') {
         Get.toNamed('/single_chat', arguments: {
           'otherUserId': message.data['senderId'],
           'receiverName': message.data['senderName'],

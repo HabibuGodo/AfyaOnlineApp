@@ -135,8 +135,8 @@ class SingleChatScreen extends GetView<AllInsideChatController> {
                                 DateFormat.yMMMd().format(tempDate).toString();
                           }
 
-                          if (Global.singleChat[index].senderId ==
-                              authData.read("id")) {
+                          if (Global.singleChat[index].senderId !=
+                              authData.read("user_id")) {
                             return Container(
                               margin: FxSpacing.vertical(10.0),
                               child: Padding(
@@ -163,7 +163,9 @@ class SingleChatScreen extends GetView<AllInsideChatController> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             FxText.bodySmall(
-                                              Global.singleChat[index].message!,
+                                              Global.singleChat[index]
+                                                      .message ??
+                                                  "",
                                               color: Colors.black,
                                               fontSize: 15,
                                               xMuted: true,
@@ -212,7 +214,9 @@ class SingleChatScreen extends GetView<AllInsideChatController> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             FxText.bodySmall(
-                                              Global.singleChat[index].message!,
+                                              Global.singleChat[index]
+                                                      .message ??
+                                                  "",
                                               // color: controller
                                               //     .theme.colorScheme.onPrimary,
                                             ),

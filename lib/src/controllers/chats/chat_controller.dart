@@ -26,6 +26,7 @@ class ChatController extends GetxController {
   late TextEditingController groupNameTE;
   var groupName = ''.obs;
   var totalUnreadAllConvo = 0.obs;
+  var filterConvValue = ''.obs;
 
   late ThemeData theme;
   var groups = <GroupModel>[].obs;
@@ -293,7 +294,6 @@ class ChatController extends GetxController {
           options: cacheOptions,
         );
         if (response.statusCode == 200) {
-          // decode response to observable list
           // log(response.data);
           var jsonResponse = response.data['data'];
           Global.totalUnreadAllConvo.value =
@@ -301,10 +301,18 @@ class ChatController extends GetxController {
 
           List<dynamic> dataEx = jsonResponse;
 
+          if (filterConvValue.value == '') {
+            allConvo.value =
+                (dataEx).map((e) => CoversatationModel.fromMap(e)).toList().obs;
+
+            allConvoTemList.value = List.from(allConvo);
+          }
+
           // allConvo.value =
           //     (dataEx).map((e) => CoversatationModel.fromMap(e)).toList().obs;
-          // allConvoTemList.value = List.from(allConvo);
+
           var myList = List.from(allConvo);
+
           getSingleChatMessage(userId);
           yield myList;
         } else {
@@ -321,15 +329,15 @@ class ChatController extends GetxController {
 
   //filter convo list
   void filterConvoList(String value) {
-    print(value);
     if (value.isNotEmpty) {
+      filterConvValue.value = value;
       allConvo.value = allConvoTemList
           .where((element) =>
               element.receiverName!.toLowerCase().contains(value.toLowerCase()))
           .toList()
           .obs;
-      print(allConvo);
     } else {
+      filterConvValue.value = '';
       allConvo.value = List.from(allConvoTemList);
 
       allConvo.sort((a, b) => a.receiverName!.compareTo(b.receiverName!));

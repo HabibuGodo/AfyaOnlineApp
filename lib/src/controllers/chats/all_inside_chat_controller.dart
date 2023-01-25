@@ -23,7 +23,6 @@ class AllInsideChatController extends GetxController {
   var messageInput = ''.obs;
   late TextEditingController messageInputTE;
 
-
   late var groupId;
   late var receiverId;
   late var groupName;
@@ -63,7 +62,7 @@ class AllInsideChatController extends GetxController {
 
 //filter all single chat messages
   void filterSingleChatMessage(var receiverId) {
-    // updateMessageRead();
+    updateMessageRead();
     Global.singleChat.value = Global.singleChatTem
         .where((element) =>
             element.receiverId!.isEqual(receiverId) ||
@@ -80,8 +79,6 @@ class AllInsideChatController extends GetxController {
         .toList()
         .obs;
   }
-
-
 
 //=========================send group message
   void sendMessage() async {
@@ -133,12 +130,16 @@ class AllInsideChatController extends GetxController {
   }
 
   Future sendSingleMessage() async {
+    var msg = messageInput.value.toString();
+    messageInputTE.clear();
+    messageInput.value = '';
+    Global.singleChat.refresh();
     try {
       final response =
           await http.post(Uri.parse('$baseURL/sendMessageSingle'), body: {
         "receiver_id": receiverId.toString(),
         "sender_id": senderId.toString(),
-        "message": messageInput.value.toString(),
+        "message": msg,
       }, headers: {
         "Accept": "application/json"
       });
@@ -163,19 +164,37 @@ class AllInsideChatController extends GetxController {
             'New Message', payloadData, messageInput.value.toString());
 //==============================================================================
 
-        // getChatMessage(groupId);
-        messageInputTE.clear();
-        messageInput.value = '';
-        Global.singleChat.refresh();
         EasyLoading.dismiss();
       }
     } catch (e) {
       EasyLoading.dismiss();
-      log("errrroo ${e.toString()}");
+      log("errrr ${e.toString()}");
     } finally {
       EasyLoading.dismiss();
       showLoading.value = false;
       uiLoading.value = false;
+    }
+  }
+
+  //update message read status
+  Future updateMessageRead() async {
+    try {
+      final response =
+          await http.post(Uri.parse(baseURL + '/updateMessageRead'), body: {
+        //for here i will check those message where receiver is me so here me is sender that is why i
+        //put senderId in receiverId that i will check if my id is in receiver column inndatabase
+        'receiverId': senderId.toString(),
+        'senderId': receiverId.toString(),
+      }, headers: {
+        'Accept': 'application/json'
+      });
+      if (response.statusCode == 200) {
+        // print("${response.body}");
+      } else {
+        log("errrroo ${response.statusCode}");
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

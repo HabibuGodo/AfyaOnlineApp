@@ -13,6 +13,7 @@ class CoversatationModel {
     required this.lastMsgReceiverId,
     required this.receiverProfile,
     required this.readStatus,
+    required this.firebaseToken,
   });
 
   int? id;
@@ -28,6 +29,7 @@ class CoversatationModel {
   int? lastMsgReceiverId;
   dynamic receiverProfile;
   int? readStatus;
+  String firebaseToken;
 
   factory CoversatationModel.fromMap(Map<String, dynamic> json) =>
       CoversatationModel(
@@ -44,6 +46,7 @@ class CoversatationModel {
         lastMsgReceiverId: json["lastMsgReceiverId"],
         receiverProfile: json["receiver_profile"],
         readStatus: json["readStatus"],
+        firebaseToken: json["firebaseToken"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -60,5 +63,6 @@ class CoversatationModel {
         "lastMsgReceiverId": lastMsgReceiverId,
         "receiver_profile": receiverProfile,
         "readStatus": readStatus,
+        "firebaseToken": firebaseToken,
       };
 }

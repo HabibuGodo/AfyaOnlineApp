@@ -61,7 +61,7 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
                       onTap: () {
                         var otherUserId;
                         if (controller.allConvo[index].receiverId !=
-                            authData.read('id')) {
+                            authData.read('user_id')) {
                           otherUserId = controller.allConvo[index].receiverId;
                         } else {
                           otherUserId = controller.allConvo[index].senderId;
@@ -72,6 +72,8 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
                           'receiverName': controller
                               .allConvo[index].receiverName
                               .toString(),
+                          'firebaseToken':
+                              controller.allConvo[index].firebaseToken,
                           'checkRoute': "single"
                         });
                       },
@@ -96,8 +98,9 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
                                               size: 14,
                                             ),
                                             FxText.bodySmall(
-                                              controller
-                                                  .allConvo[index].lastMessage!,
+                                              controller.allConvo[index]
+                                                      .lastMessage ??
+                                                  "",
                                               xMuted: true,
                                               muted: true,
                                               fontWeight: 400,
@@ -114,8 +117,9 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
                                               color: Colors.blue,
                                             ),
                                             FxText.bodySmall(
-                                              controller
-                                                  .allConvo[index].lastMessage!,
+                                              controller.allConvo[index]
+                                                      .lastMessage ??
+                                                  "",
                                               xMuted: true,
                                               muted: true,
                                               fontWeight: 400,
@@ -126,8 +130,9 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
                                         )
                                   : controller.allConvo[index].readStatus == 1
                                       ? FxText.bodySmall(
-                                          controller
-                                              .allConvo[index].lastMessage!,
+                                          controller.allConvo[index]
+                                                  .lastMessage ??
+                                              "",
                                           xMuted: true,
                                           muted: true,
                                           fontWeight: 400,
@@ -135,8 +140,9 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
                                           overflow: TextOverflow.ellipsis,
                                         )
                                       : FxText.bodySmall(
-                                          controller
-                                              .allConvo[index].lastMessage!,
+                                          controller.allConvo[index]
+                                                  .lastMessage ??
+                                              "",
                                           // xMuted: true,
                                           // muted: true,
                                           fontWeight: 900,

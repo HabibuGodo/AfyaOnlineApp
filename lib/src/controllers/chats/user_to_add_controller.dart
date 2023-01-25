@@ -63,8 +63,11 @@ class UserToAddController extends GetxController {
 
         allUserNotInGroup.value =
             (dataEx).map((e) => UserModel.fromMap(e)).toList().obs;
+        allUserNotInGroup.sort((a, b) => a.name!.compareTo(b.name!));
 
         allUserNotInGroupTemList.value = List.from(allUserNotInGroup);
+        //sort user not in group tem
+        allUserNotInGroupTemList.sort((a, b) => a.name!.compareTo(b.name!));
         // EasyLoading.dismiss();
       } else {
         return;
@@ -88,6 +91,8 @@ class UserToAddController extends GetxController {
           .obs;
     } else {
       allUserNotInGroup.value = List.from(allUserNotInGroupTemList);
+      //sort
+      allUserNotInGroup.sort((a, b) => a.name!.compareTo(b.name!));
     }
   }
 
