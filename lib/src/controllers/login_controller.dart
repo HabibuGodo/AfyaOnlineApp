@@ -46,25 +46,6 @@ class LogInController extends GetxController {
     mrnController.dispose();
   }
 
-  // void login() {
-  //   if (loginFormKey.value.currentState!.validate()) {
-  //     Navigator.of(Get.context!, rootNavigator: true).push(
-  //       MaterialPageRoute(
-  //         builder: (context) => Dashboard(),
-  //       ),
-  //     );
-  //   }
-  // }
-
-  // void login1() {
-  //   if (loginFormKey.value.currentState!.validate()) {
-  //     Navigator.of(Get.context!, rootNavigator: true).push(
-  //       MaterialPageRoute(
-  //         builder: (context) => Dashboard(),
-  //       ),
-  //     );
-  //   }
-  // }
 
   String? validateMRN(String? value) {
     if (value == null || value.isEmpty) {
@@ -115,8 +96,6 @@ class LogInController extends GetxController {
           'mrn': mrnNumber.value,
         },
       );
-
-      log(response.body.toString());
 
       if (response.body.contains('success')) {
         var jsonResponse = convert.jsonDecode(response.body);

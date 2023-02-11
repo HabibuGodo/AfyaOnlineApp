@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutkit/src/services/local_storage.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 import '../../theme/app_theme.dart';
 import '../services/base_service.dart';
-import 'chats/global.dart';
+import 'global.dart';
 
 class LoginOTPController extends GetxController {
   // count down timer
@@ -95,7 +96,7 @@ class LoginOTPController extends GetxController {
           authData.write('phone', jsonResponse['user']['phone']);
           authData.write('email', jsonResponse['user']['email']);
           authData.write('role', jsonResponse['user']['role_id']);
-          authData.write('mnr', jsonResponse['user']['mnr']);
+          authData.write('mrn', jsonResponse['user']['mrn']);
           authData.write(
               'profile_image', jsonResponse['user']['profile_image']);
 

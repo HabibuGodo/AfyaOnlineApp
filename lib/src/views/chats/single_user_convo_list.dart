@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutkit/src/controllers/chats/chat_controller.dart';
+import 'package:flutkit/src/controllers/global.dart';
 import 'package:flutkit/theme/constant.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +29,7 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
                 margin: FxSpacing.top(250),
                 child: Center(
                   child: FxText.sh1(
-                    "No any converstation",
+                    "No any conversation",
                     color: controller.theme.colorScheme.onBackground,
                     textAlign: TextAlign.center,
                   ),
@@ -59,6 +62,7 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
                     }
                     return InkWell(
                       onTap: () {
+                        // Global.singleChat.clear();
                         var otherUserId;
                         if (controller.allConvo[index].receiverId !=
                             authData.read('user_id')) {
@@ -249,7 +253,7 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
             },
             backgroundColor: controller.theme.primaryColor,
             child: const Icon(
-              Icons.add,
+              Icons.chat_sharp,
               color: Colors.white,
             ),
           ),

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 
 import '../services/local_storage.dart';
-import 'chats/global.dart';
+import 'global.dart';
 
 class SplashController extends GetxController {
   @override
@@ -16,7 +16,6 @@ class SplashController extends GetxController {
       // check if viewed onboard
       if (authData.read('isLogged') == true) {
         var emailAddress = authData.read('email');
-        log(emailAddress);
         Global.verifyUser(emailAddress, emailAddress);
         Get.offAndToNamed('/home');
       } else {

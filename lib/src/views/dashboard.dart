@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../componets/shared_function.controller.dart';
-import '../controllers/chats/global.dart';
+import '../controllers/global.dart';
 import '../controllers/dashboard_controller.dart';
 import '../services/local_storage.dart';
 // import 'explore_screen.dart';
@@ -43,7 +43,6 @@ class Dashboard extends GetView<DashboardController> {
           child: Scaffold(
             body: _widgetOptions(controller.currentIndex.value),
             bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Colors.white,
               items: [
                 BottomNavigationBarItem(
                   icon: Global.totalUnreadAllConvo.value == 0
@@ -91,6 +90,8 @@ class Dashboard extends GetView<DashboardController> {
               unselectedItemColor: Color.fromARGB(255, 58, 83, 78),
               showUnselectedLabels: true,
               showSelectedLabels: true,
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.white,
               onTap: (index) {
                 print(index);
                 controller.handleTabSelection(index);

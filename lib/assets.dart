@@ -4,6 +4,9 @@ const file = 'assets/filesLogo/file.png';
 // pdf
 const pdf = 'assets/filesLogo/pdf.png';
 
+// pdf
+const video = 'assets/filesLogo/video.png';
+
 // word
 const word = 'assets/filesLogo/word.png';
 

@@ -4,7 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
-import 'package:flutkit/src/controllers/chats/global.dart';
+import 'package:flutkit/src/controllers/global.dart';
 import 'package:flutkit/src/models/single_message_model.dart';
 import 'package:flutkit/src/models/user_model.dart';
 import 'package:flutkit/src/services/local_storage.dart';
@@ -22,6 +22,7 @@ class AllInsideChatController extends GetxController {
   var showLoading = true.obs, uiLoading = true.obs;
   var messageInput = ''.obs;
   late TextEditingController messageInputTE;
+  var scrollController = ScrollController().obs;
 
   late var groupId;
   late var receiverId;
@@ -29,6 +30,7 @@ class AllInsideChatController extends GetxController {
   late var receiverName;
   late var checkRoute;
   late var firebaseToken;
+  late var groupTokens;
 
   // late Chat chat;
   late ThemeData theme;
@@ -48,6 +50,7 @@ class AllInsideChatController extends GetxController {
     } else {
       groupId = Get.arguments['groupId'];
       groupName = Get.arguments['groupName'];
+
       filterGroupChatMessage(groupId);
     }
 
@@ -82,22 +85,50 @@ class AllInsideChatController extends GetxController {
 
 //=========================send group message
   void sendMessage() async {
+    var msg = messageInput.value.toString();
+    messageInputTE.clear();
+    messageInput.value = '';
+    Global.groupChat.refresh();
     try {
       final response =
           await http.post(Uri.parse('$baseURL/sendMessages'), body: {
         "group_id": groupId.toString(),
         "sender_id": senderId.toString(),
-        "message": messageInput.value.toString(),
+        "message": msg,
       }, headers: {
         "Accept": "application/json"
       });
 
       if (response.body.contains("success")) {
         // getChatMessage(groupId);
-        messageInputTE.clear();
-        messageInput.value = '';
-        Global.groupChat.refresh();
-        EasyLoading.dismiss();
+
+        final responseFetch = await Dio()
+            .get('$baseURL/usersInGroup/$senderId/${groupId.toString()}');
+
+        if (responseFetch.statusCode == 200) {
+          log(responseFetch.data['group_tokens'].toString());
+          var payloadData = {
+            'title': 'New Message',
+            'body': messageInput.value.toString(),
+            'groupId': groupId.toString(),
+            'groupName': groupName,
+            'checkRoute': 'group',
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK'
+          };
+
+//send notification=============================================================
+          if (responseFetch.data['group_tokens'] != []) {
+            await LocalNotificationService.send_push_notificationToMany(
+                responseFetch.data['group_tokens'],
+                'New Message',
+                payloadData,
+                msg);
+          }
+
+//==============================================================================
+        }
+
+        scrollToTheEnd();
       }
     } catch (e) {
       EasyLoading.dismiss();
@@ -158,10 +189,10 @@ class AllInsideChatController extends GetxController {
           'vibrate': true,
           'enableLights': true,
         };
-
+        scrollToTheEnd();
 //send notification=============================================================
-        await LocalNotificationService.send_push_notification(firebaseToken,
-            'New Message', payloadData, messageInput.value.toString());
+        await LocalNotificationService.send_push_notification(
+            firebaseToken, 'New Message', payloadData, msg);
 //==============================================================================
 
         EasyLoading.dismiss();
@@ -190,11 +221,19 @@ class AllInsideChatController extends GetxController {
       });
       if (response.statusCode == 200) {
         // print("${response.body}");
+        // scrollToTheEnd();
       } else {
         log("errrroo ${response.statusCode}");
       }
     } catch (e) {
       print(e);
     }
+  }
+
+  void scrollToTheEnd() {
+    scrollController.value.animateTo(
+        scrollController.value.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut);
   }
 }

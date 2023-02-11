@@ -35,14 +35,20 @@ class AddINewsController extends GetxController {
   var newsTitle = ''.obs;
   var description = ''.obs;
 
-  var notesFile = " ".obs;
+  var docFile = " ".obs;
+  var videoFile = " ".obs;
+  var audioFile = " ".obs;
   var fileSize = ''.obs;
+  var videoFileSize = ''.obs;
+  var audioFileSize = ''.obs;
 
   var validated1 = false.obs;
 
   @override
   void onInit() {
-    notesFile.value = "";
+    docFile.value = "";
+    videoFile.value = "";
+    audioFile.value = "";
     titleTE = TextEditingController();
     descriptionTE = TextEditingController();
 
@@ -90,58 +96,139 @@ class AddINewsController extends GetxController {
   }
 
   // pick file from device
-  Future<void> pickFile() async {
-    // ask for permission
-    FilePickerResult? file = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: [
-        'pdf',
-        'doc',
-        'docx',
-        'ppt',
-        'pptx',
-        'txt',
-        'xls',
-        'xlsx'
-      ],
-    );
-    // check file extension
-    if (file != null) {
-      // check file allowedExtensions is pdf, xls, xlsx, doc, docx
-      if (file.files.single.extension != 'pdf' &&
-          file.files.single.extension != 'doc' &&
-          file.files.single.extension != 'docx' &&
-          file.files.single.extension != 'ppt' &&
-          file.files.single.extension != 'pptx' &&
-          file.files.single.extension != 'txt' &&
-          file.files.single.extension != 'xls' &&
-          file.files.single.extension != 'xlsx') {
-        Get.snackbar('Error', 'File type not allowed',
-            backgroundColor: Colors.red,
-            colorText: theme.colorScheme.onPrimary,
-            snackPosition: SnackPosition.TOP);
-      } else {
-        // file size in KB
-        var size = file.files.single.size / 1024;
-        // file size in MB
-        var sizeInMB = (size / 1024);
+  Future<void> pickFile(String typed) async {
+    if (typed == 'file') {
+      // ask for permission
+      FilePickerResult? file = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: [
+          'pdf',
+          'doc',
+          'docx',
+          'ppt',
+          'pptx',
+          'txt',
+          'xls',
+          'xlsx'
+        ],
+      );
 
-        if (sizeInMB > 10) {
-          Get.snackbar('File size', 'File size should be less than 5MB',
+      // check file extension
+      if (file != null) {
+        // check file allowedExtensions is pdf, xls, xlsx, doc, docx
+        if (file.files.single.extension != 'pdf' &&
+            file.files.single.extension != 'doc' &&
+            file.files.single.extension != 'docx' &&
+            file.files.single.extension != 'ppt' &&
+            file.files.single.extension != 'pptx' &&
+            file.files.single.extension != 'txt' &&
+            file.files.single.extension != 'xls' &&
+            file.files.single.extension != 'xlsx') {
+          Get.snackbar('Error', 'File type not allowed',
               backgroundColor: Colors.red,
               colorText: theme.colorScheme.onPrimary,
               snackPosition: SnackPosition.TOP);
         } else {
-          notesFile.value = file.files.single.path.toString();
+          // file size in KB
+          var size = file.files.single.size / 1024;
+          // file size in MB
+          var sizeInMB = (size / 1024);
+
+          if (sizeInMB > 5) {
+            Get.snackbar('File size', 'File size should be less than 5MB',
+                backgroundColor: Colors.red,
+                colorText: theme.colorScheme.onPrimary,
+                snackPosition: SnackPosition.TOP);
+          } else {
+            docFile.value = file.files.single.path.toString();
+          }
+          // convers double to string
+          fileSize = (sizeInMB).toStringAsFixed(2).obs;
         }
-        // convers double to string
-        fileSize = (sizeInMB).toStringAsFixed(2).obs;
+      } else {
+        Get.snackbar('Not Attached', 'You have not Selected any File',
+            snackPosition: SnackPosition.TOP);
+      }
+      // notesFile.value = file.path;
+
+    } else if (typed == 'video') {
+      // ask for permission
+      FilePickerResult? file = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['mp4', 'avi', 'mov', 'mkv'],
+      );
+
+      // check file extension
+      if (file != null) {
+        // check file allowedExtensions is pdf, xls, xlsx, doc, docx
+        if (file.files.single.extension != 'mp4' &&
+            file.files.single.extension != 'mov' &&
+            file.files.single.extension != 'avi' &&
+            file.files.single.extension != 'mkv') {
+          Get.snackbar('Error', 'File type not allowed',
+              backgroundColor: Colors.red,
+              colorText: theme.colorScheme.onPrimary,
+              snackPosition: SnackPosition.TOP);
+        } else {
+          // file size in KB
+          var size = file.files.single.size / 1024;
+          // file size in MB
+          var sizeInMB = (size / 1024);
+
+          if (sizeInMB > 10) {
+            Get.snackbar('File size', 'File size should be less than 10MB',
+                backgroundColor: Colors.red,
+                colorText: theme.colorScheme.onPrimary,
+                snackPosition: SnackPosition.TOP);
+          } else {
+            videoFile.value = file.files.single.path.toString();
+          }
+          // convers double to string
+          videoFileSize = (sizeInMB).toStringAsFixed(2).obs;
+        }
+      } else {
+        Get.snackbar('Not Attached', 'You have not Selected any video file',
+            snackPosition: SnackPosition.TOP);
       }
     } else {
-      Get.snackbar('Not Attached', 'You have not Selected any File',
-          snackPosition: SnackPosition.TOP);
+      // ask for permission
+      FilePickerResult? file = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['mp3', 'aac', 'wav'],
+      );
+
+      // check file extension
+      if (file != null) {
+        // check file allowedExtensions is pdf, xls, xlsx, doc, docx
+        if (file.files.single.extension != 'mp3' &&
+            file.files.single.extension != 'aac' &&
+            file.files.single.extension != 'wav') {
+          Get.snackbar('Error', 'File type not allowed',
+              backgroundColor: Colors.red,
+              colorText: theme.colorScheme.onPrimary,
+              snackPosition: SnackPosition.TOP);
+        } else {
+          // file size in KB
+          var size = file.files.single.size / 1024;
+          // file size in MB
+          var sizeInMB = (size / 1024);
+
+          if (sizeInMB > 10) {
+            Get.snackbar('File size', 'File size should be less than 10MB',
+                backgroundColor: Colors.red,
+                colorText: theme.colorScheme.onPrimary,
+                snackPosition: SnackPosition.TOP);
+          } else {
+            audioFile.value = file.files.single.path.toString();
+          }
+          // convers double to string
+          audioFileSize = (sizeInMB).toStringAsFixed(2).obs;
+        }
+      } else {
+        Get.snackbar('Not Attached', 'You have not Selected any audio file',
+            snackPosition: SnackPosition.TOP);
+      }
     }
-    // notesFile.value = file.path;
   }
 
   // fetch all News feed
@@ -174,6 +261,10 @@ class AddINewsController extends GetxController {
   }
 
   Future<void> postNews() async {
+    EasyLoading.show(
+      status: 'Please wait...',
+      maskType: EasyLoadingMaskType.black,
+    );
     try {
       var request =
           http.MultipartRequest('POST', Uri.parse('$baseURL/createFeed'));
@@ -181,7 +272,9 @@ class AddINewsController extends GetxController {
       request.fields['description'] = description.value.toString();
       request.fields['userId'] = authData.read('user_id').toString();
       request.fields['image'] = myPhoto1.value;
-      request.fields['file'] = notesFile.value;
+      request.fields['file'] = docFile.value;
+      request.fields['video'] = videoFile.value;
+      request.fields['audio'] = audioFile.value;
       request.headers['Accept'] = 'application/json';
 
       if (myPhoto1.value != '') {
@@ -194,13 +287,35 @@ class AddINewsController extends GetxController {
             filename: _file.path.split('/').last,
           ),
         );
-      } else {}
+      }
 
-      if (notesFile.value != '') {
-        final File attachment = File(notesFile.value);
+      if (docFile.value != '') {
+        final File attachment = File(docFile.value);
 
         request.files.add(http.MultipartFile(
           'file',
+          attachment.readAsBytes().asStream(),
+          attachment.lengthSync(),
+          filename: attachment.path.split('/').last,
+        ));
+      }
+
+      if (videoFile.value != '') {
+        final File attachment = File(videoFile.value);
+
+        request.files.add(http.MultipartFile(
+          'video',
+          attachment.readAsBytes().asStream(),
+          attachment.lengthSync(),
+          filename: attachment.path.split('/').last,
+        ));
+      }
+
+      if (audioFile.value != '') {
+        final File attachment = File(audioFile.value);
+
+        request.files.add(http.MultipartFile(
+          'audio',
           attachment.readAsBytes().asStream(),
           attachment.lengthSync(),
           filename: attachment.path.split('/').last,
@@ -239,7 +354,7 @@ class AddINewsController extends GetxController {
           showGif: true,
           selectCount: 10,
           showCamera: true,
-          cropConfig: CropConfig(enableCrop: true, height: 1, width: 1),
+          cropConfig: CropConfig(enableCrop: true, width: 2, height: 3),
           compressSize: 500,
           uiConfig: UIConfig(
             uiThemeColor: Color(0xffff0000),

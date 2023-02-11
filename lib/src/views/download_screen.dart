@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutkit/loading_effect.dart';
+import 'package:flutkit/src/controllers/global.dart';
 import 'package:flutkit/src/views/resources/preview_doc.dart';
 import 'package:flutkit/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,7 @@ class DownloadScreen extends GetView<DownloadController> {
 
                             // var filePath =
                             //     base + controller.notesList[index].file;
-
+                            Global.download(url1);
                             Get.to(() => PDFViewerCachedFromUrl(
                                   url: url1,
                                   name: "Sera Ya Afya",
@@ -149,6 +150,8 @@ class DownloadScreen extends GetView<DownloadController> {
                                   name:
                                       "Mwongozo wa Virusi Vya Korona (COVID-19)",
                                 ));
+
+                            Global.download(url2);
                           },
                           // leadung image
                           leading: Container(

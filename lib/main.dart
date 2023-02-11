@@ -8,6 +8,7 @@ import 'package:flutkit/src/views/chats/single_users_list.dart';
 import 'package:flutkit/localizations/app_localization_delegate.dart';
 import 'package:flutkit/localizations/language.dart';
 import 'package:flutkit/src/views/chats/user_list_to_add.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutkit/theme/app_notifier.dart';
 import 'package:flutkit/theme/app_theme.dart';
@@ -54,6 +55,14 @@ Future<void> main() async {
   //You will need to initialize AppThemeNotifier class for theme changes.
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
+  // ======================flutter downloader
+  await FlutterDownloader.initialize(
+      debug:
+          true, // optional: set to false to disable printing logs to console (default: true)
+      ignoreSsl:
+          true // option: set to false to disable working with http links (default: false)
+      );
+  //=============================
   await Permission.notification.isDenied.then((value) {
     if (value) {
       Permission.notification.request();

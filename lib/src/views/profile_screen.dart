@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:art_sweetalert/art_sweetalert.dart';
+import 'package:flutkit/src/controllers/global.dart';
 import 'package:flutkit/src/services/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -39,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               artDialogArgs: ArtDialogArgs(
                   denyButtonText: "No, go back",
                   denyButtonColor: Colors.red,
-                  confirmButtonColor: Colors.green,
+                  confirmButtonColor: controller.theme.colorScheme.primary,
                   title: 'Logout',
                   text: "Are you sure, you want to logout of this app?",
                   confirmButtonText: "Yes, logout",
@@ -49,6 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             authData.erase();
             appBox.erase();
             authData.write('isLogged', false);
+            IsolateNameServer.removePortNameMapping('downloader_send_port');
             Get.back();
             Get.offAllNamed('/login');
           }
@@ -156,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   fit: BoxFit.cover,
                   width: 100,
                   height: 100,
-                  image: AssetImage("assets/images/profile/avatar_place.png"),
+                  image: AssetImage("assets/images/profile/profile.png"),
                 ),
               ),
             ),
@@ -168,6 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontWeight: 600,
             letterSpacing: 0.8,
           ),
+
           FxSpacing.height(4),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -187,6 +192,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
           ),
+          FxSpacing.height(4),
+          mrnWidget(),
           FxSpacing.height(24),
           FxText.bodyLarge(
             'General',
@@ -217,5 +224,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       );
     }
+  }
+
+  Widget mrnWidget() {
+    return Align(
+      alignment: Alignment.center,
+      child: FxContainer(
+        padding: FxSpacing.fromLTRB(6, 4, 12, 4),
+        borderRadiusAll: Constant.containerRadius.large,
+        color: theme.colorScheme.primaryContainer,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: theme.colorScheme.onPrimaryContainer,
+              size: 16,
+            ),
+            FxSpacing.width(8),
+            FxText.bodySmall(
+              "${authData.read('mrn')}",
+              color: theme.colorScheme.onPrimaryContainer,
+              fontWeight: 600,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

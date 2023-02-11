@@ -17,7 +17,7 @@ import '../../models/message_model.dart';
 import '../../models/single_message_model.dart';
 import '../../services/base_service.dart';
 import '../../services/local_storage.dart';
-import 'global.dart';
+import '../global.dart';
 
 class ChatController extends GetxController {
   var showLoading = true.obs, uiLoading = true.obs;
@@ -169,7 +169,6 @@ class ChatController extends GetxController {
 
       if (response.statusCode == 200) {
         var jsonResponse = response.data['data'];
-
         List<dynamic> dataEx = jsonResponse;
 
         groups.value = (dataEx).map((e) => GroupModel.fromMap(e)).toList().obs;
@@ -293,6 +292,7 @@ class ChatController extends GetxController {
           '$baseURL/conversations/$userId',
           options: cacheOptions,
         );
+
         if (response.statusCode == 200) {
           // log(response.data);
           var jsonResponse = response.data['data'];
@@ -370,10 +370,10 @@ class ChatController extends GetxController {
 
         List<dynamic> dataEx = jsonResponse;
 
-        Global.singleChat.value =
+        // Global.singleChat.value =
+        //     (dataEx).map((e) => SingleMessageModel.fromMap(e)).toList().obs;
+        Global.singleChatTem.value =
             (dataEx).map((e) => SingleMessageModel.fromMap(e)).toList().obs;
-
-        EasyLoading.dismiss();
       } else {
         return;
       }

@@ -29,6 +29,7 @@ class GroupListScreen extends GetView<ChatController> {
         Get.toNamed('/group_chat', arguments: {
           'groupId': group.id,
           'groupName': group.groupName,
+          'groupTokens': group.groupTokens,
           'checkRoute': "group"
         });
       },

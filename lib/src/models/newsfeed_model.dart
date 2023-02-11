@@ -17,6 +17,8 @@ class NewsFeedModel {
     required this.description,
     required this.image,
     required this.file,
+    required this.video,
+    required this.audio,
     required this.userId,
     required this.createdAt,
     required this.updatedAt,
@@ -27,6 +29,8 @@ class NewsFeedModel {
   String description;
   String image;
   String file;
+  String video;
+  String audio;
   int userId;
   DateTime createdAt;
   DateTime updatedAt;
@@ -37,6 +41,8 @@ class NewsFeedModel {
         description: json["description"],
         image: json["image"],
         file: json["file"] ?? "",
+        video: json["video"] ?? "",
+        audio: json["audio"] ?? "",
         userId: json["user_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -48,6 +54,8 @@ class NewsFeedModel {
         "description": description,
         "image": image,
         "file": file,
+        "video": video,
+        "audio": audio,
         "user_id": userId,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),

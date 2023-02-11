@@ -69,4 +69,33 @@ class LocalNotificationService {
       print(response.reasonPhrase);
     }
   }
+
+  static Future<dynamic> send_push_notificationToMany(
+      List peerTokens, String title, dynamic payloadData, String body) async {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Key=$firebaseServerKey'
+    };
+    var request =
+        http.Request('POST', Uri.parse('https://fcm.googleapis.com/fcm/send'));
+    request.body = json.encode({
+      "registration_ids": peerTokens,
+      "notification": {
+        "title": title,
+        "body": body,
+        "content_available": true,
+        "priority": "high",
+      },
+      "data": payloadData
+    });
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
 }

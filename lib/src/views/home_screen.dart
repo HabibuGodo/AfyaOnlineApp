@@ -1,7 +1,11 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutkit/assets.dart';
+import 'package:flutkit/src/controllers/global.dart';
 import 'package:flutkit/src/models/newsfeed_model.dart';
 import 'package:flutkit/src/services/local_storage.dart';
+import 'package:flutkit/src/views/resources/audioPlayer.dart';
 import 'package:flutkit/src/views/resources/preview_doc.dart';
+import 'package:flutkit/src/views/resources/videoPalyer.dart';
 import 'package:flutkit/theme/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
@@ -14,26 +18,6 @@ import '../services/base_service.dart';
 
 class HomeScreen extends GetView<ShareController> {
   HomeScreen({Key? key}) : super(key: key);
-
-  // List<Widget> _buildCategoryList() {
-  //   List<Widget> list = [];
-  //   list.add(FxSpacing.width(24));
-
-  //   controller.categoriesList.forEach((element) {
-  //     list.add(_buildSingleCategory(element));
-  //   });
-
-  //   return list;
-  // }
-
-  // List<Widget> _buildFilterCategoryList() {
-  //   List<Widget> list = [];
-  //   list.add(FxSpacing.width(24));
-  //   controller.categoriesList.forEach((element) {
-  //     list.add(_buildFilterCategory(element));
-  //   });
-  //   return list;
-  // }
 
   List<Widget> _buildNewsList() {
     List<Widget> list = [];
@@ -61,6 +45,38 @@ class HomeScreen extends GetView<ShareController> {
       borderRadiusAll: Constant.containerRadius.medium,
       child: Column(
         children: [
+          authData.read('role') != 1
+              ? Container()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        ArtDialogResponse response = await ArtSweetAlert.show(
+                            barrierDismissible: false,
+                            context: Get.context!,
+                            artDialogArgs: ArtDialogArgs(
+                                denyButtonText: "No, Don't",
+                                denyButtonColor: Colors.red,
+                                confirmButtonColor:
+                                    controller.theme.colorScheme.primary,
+                                title: 'Delete',
+                                text:
+                                    "Are you sure, you want to delete this this news?",
+                                confirmButtonText: "Yes, delete",
+                                type: ArtSweetAlertType.warning));
+
+                        if (response.isTapConfirmButton) {
+                          controller.deleteNewsFeed(id: news.id.toString());
+                        }
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
           news.image.isEmpty
               ? Container()
               : Image(
@@ -87,11 +103,6 @@ class HomeScreen extends GetView<ShareController> {
                       fontWeight: 900,
                       // color: controller.theme.colorScheme.onPrimary,
                     ),
-                    // FxText.bodyMedium(
-                    //   "\Tsh" + item.price.toString(),
-                    //   fontWeight: 600,
-                    //   color: controller.theme.colorScheme.secondary,
-                    // ),
                   ],
                 ),
                 FxSpacing.height(8),
@@ -118,7 +129,156 @@ class HomeScreen extends GetView<ShareController> {
                   ],
                 ),
                 FxSpacing.height(8),
-                news.file == null || news.file == ''
+                news.file == ''
+                    ? Container()
+                    : Container(
+                        margin: const EdgeInsets.only(
+                          bottom: 10,
+                        ),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  spreadRadius: 0,
+                                  blurRadius: 1,
+                                  offset: const Offset(0, 0))
+                            ]),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 4.0, left: 20),
+                              child: Text(
+                                "File",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            ListTile(
+                              // onTap: () {
+                              //   var base = imageURL.trim();
+
+                              //   var filePath = base + news.file;
+
+                              //   Global.download(filePath);
+                              //   Get.to(() => PDFViewerCachedFromUrl(
+                              //         url: filePath,
+                              //         name: news.title.toString(),
+                              //       ));
+                              // },
+                              // leadung image
+                              leading: Container(
+                                height: 40,
+                                width: 40,
+                                child: InkWell(
+                                  onTap: () {
+                                    var base = imageURL.trim();
+                                    var filePath = base + news.file;
+                                    Get.to(() => PDFViewerCachedFromUrl(
+                                          url: filePath,
+                                          name: news.title.toString(),
+                                        ));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.preview,
+                                        size: 40,
+                                        color: Colors.blue,
+                                      ),
+                                      // Text("Play"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              // leading: Container(
+                              //   height: 40,
+                              //   width: 40,
+                              //   decoration: BoxDecoration(
+                              //       borderRadius: BorderRadius.circular(8),
+                              //       image: const DecorationImage(
+                              //           image: AssetImage(file),
+                              //           fit: BoxFit.cover)),
+                              // ),
+
+                              // title: Row(
+                              //   children: [
+                              //     Icon(Icons.download_rounded),
+                              //     Text("File"),
+                              //   ],
+                              // ),
+
+                              title: Container(
+                                margin: EdgeInsets.only(left: 30),
+                                height: 40,
+                                width: 40,
+                                child: InkWell(
+                                  onTap: () {
+                                    var base = imageURL.trim();
+                                    var filePath = base + news.file;
+                                    Global.download(filePath);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.download,
+                                        size: 40,
+                                        color: Colors.green,
+                                      ),
+                                      // Text("Play"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              trailing: authData.read('role') != 1
+                                  ? Container(
+                                      child: Text(""),
+                                    )
+                                  : IconButton(
+                                      onPressed: () async {
+                                        ArtDialogResponse
+                                            response =
+                                            await ArtSweetAlert.show(
+                                                barrierDismissible: false,
+                                                context: Get.context!,
+                                                artDialogArgs: ArtDialogArgs(
+                                                    denyButtonText: "No, Don't",
+                                                    denyButtonColor: Colors.red,
+                                                    confirmButtonColor:
+                                                        controller.theme
+                                                            .colorScheme.primary,
+                                                    title: 'Delete',
+                                                    text:
+                                                        "Are you sure, you want to delete this this file?",
+                                                    confirmButtonText:
+                                                        "Yes, delete",
+                                                    type: ArtSweetAlertType
+                                                        .warning));
+
+                                        if (response.isTapConfirmButton) {
+                                          controller.editNewsFeed(
+                                            id: news.id.toString(),
+                                            title: news.title,
+                                            description: news.description,
+                                            imageFile: news.image,
+                                            docFile: '',
+                                            videoFile: news.video,
+                                            audioFile: news.audio,
+                                          );
+                                        }
+                                      },
+                                      icon: Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      )),
+                              // subtitle: const Text('Uploaded on 2021-05-05'),
+                            ),
+                          ],
+                        ),
+                      ),
+                news.video == ''
                     ? Container()
                     : Container(
                         margin: const EdgeInsets.only(bottom: 10),
@@ -132,49 +292,247 @@ class HomeScreen extends GetView<ShareController> {
                                   blurRadius: 1,
                                   offset: const Offset(0, 0))
                             ]),
-                        child: ListTile(
-                          onTap: () {
-                            // print file path
-                            // print(controller.notesList[index].file);
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 4.0, left: 20),
+                              child: Text(
+                                "Video",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            ListTile(
+                              // leadung image
+                              leading: Container(
+                                height: 40,
+                                width: 40,
+                                child: InkWell(
+                                  onTap: () {
+                                    var base = imageURL.trim();
+                                    var videoPath = base + news.video;
+                                    Navigator.push(
+                                        Get.context!,
+                                        MaterialPageRoute(
+                                            builder: (context) => VideoApp(
+                                                  title: news.title,
+                                                  videoUrl: videoPath,
+                                                )));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.play_circle,
+                                        size: 40,
+                                        color: Colors.blue,
+                                      ),
+                                      // Text("Play"),
+                                    ],
+                                  ),
+                                ),
+                              ),
 
-                            var base = imageURL.trim();
+                              title: Container(
+                                margin: EdgeInsets.only(left: 30),
+                                height: 40,
+                                width: 40,
+                                child: InkWell(
+                                  onTap: () {
+                                    var base = imageURL.trim();
+                                    var videoPath = base + news.video;
+                                    Global.download(videoPath);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.download,
+                                        size: 40,
+                                        color: Colors.green,
+                                      ),
+                                      // Text("Play"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              trailing: authData.read('role') != 1
+                                  ? Container(
+                                      child: Text(""),
+                                    )
+                                  : IconButton(
+                                      onPressed: () async {
+                                        ArtDialogResponse
+                                            response =
+                                            await ArtSweetAlert.show(
+                                                barrierDismissible: false,
+                                                context: Get.context!,
+                                                artDialogArgs: ArtDialogArgs(
+                                                    denyButtonText: "No, Don't",
+                                                    denyButtonColor: Colors.red,
+                                                    confirmButtonColor:
+                                                        controller.theme
+                                                            .colorScheme.primary,
+                                                    title: 'Delete',
+                                                    text:
+                                                        "Are you sure, you want to delete this this video?",
+                                                    confirmButtonText:
+                                                        "Yes, Delete",
+                                                    type: ArtSweetAlertType
+                                                        .warning));
 
-                            var filePath = base + news.file;
+                                        if (response.isTapConfirmButton) {
+                                          controller.editNewsFeed(
+                                            id: news.id.toString(),
+                                            title: news.title,
+                                            description: news.description,
+                                            imageFile: news.image,
+                                            docFile: news.file,
+                                            videoFile: '',
+                                            audioFile: news.audio,
+                                          );
+                                        }
+                                      },
+                                      icon: Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      )),
+                              // subtitle: const Text('Uploaded on 2021-05-05'),
+                            ),
+                          ],
+                        ),
+                      ),
+                news.audio == ''
+                    ? Container()
+                    : Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  spreadRadius: 0,
+                                  blurRadius: 1,
+                                  offset: const Offset(0, 0))
+                            ]),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 4.0, left: 20),
+                              child: Text(
+                                "Audio",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            ListTile(
+                              // leadung image
+                              leading: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: const DecorationImage(
+                                        image: AssetImage(file),
+                                        fit: BoxFit.cover)),
+                              ),
 
-                            // print(filePath);
+                              // Container(
+                              //   height: 40,
+                              //   width: 40,
+                              //   child: InkWell(
+                              //     onTap: () {
+                              //       var base = imageURL.trim();
+                              //       var audioPath = base + news.audio;
+                              //       Navigator.push(
+                              //           Get.context!,
+                              //           MaterialPageRoute(
+                              //               builder: (context) =>
+                              //                   AudioPlayerApp(
+                              //                     title: news.title,
+                              //                     audioUrl: audioPath,
+                              //                   )));
+                              //     },
+                              //     child: Row(
+                              //       children: [
+                              //         Icon(
+                              //           Icons.play_circle,
+                              //           size: 40,
+                              //           color: Colors.blue,
+                              //         ),
+                              //         // Text("Play"),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
 
-                            // Get.to(() => ViewPdfFiles(
-                            //     path: filePath, fileName: "Sample2"));
+                              title: Container(
+                                margin: EdgeInsets.only(left: 30),
+                                height: 40,
+                                width: 40,
+                                child: InkWell(
+                                  onTap: () {
+                                    var base = imageURL.trim();
+                                    var audioPath = base + news.audio;
+                                    Global.download(audioPath);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.download,
+                                        size: 40,
+                                        color: Colors.green,
+                                      ),
+                                      // Text("Play"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              trailing: authData.read('role') != 1
+                                  ? Container(
+                                      child: Text(""),
+                                    )
+                                  : IconButton(
+                                      onPressed: () async {
+                                        ArtDialogResponse
+                                            response =
+                                            await ArtSweetAlert.show(
+                                                barrierDismissible: false,
+                                                context: Get.context!,
+                                                artDialogArgs: ArtDialogArgs(
+                                                    denyButtonText: "No, Don't",
+                                                    denyButtonColor: Colors.red,
+                                                    confirmButtonColor:
+                                                        controller.theme
+                                                            .colorScheme.primary,
+                                                    title: 'Delete',
+                                                    text:
+                                                        "Are you sure, you want to delete this this audio?",
+                                                    confirmButtonText:
+                                                        "Yes, Delete",
+                                                    type: ArtSweetAlertType
+                                                        .warning));
 
-                            // Get.to(() => PDFReader(
-                            //       path: filePath,
-                            //     ));
-
-                            Get.to(() => PDFViewerCachedFromUrl(
-                                  url: filePath,
-                                  name: news.title.toString(),
-                                ));
-
-                            // // split file path
-                            // var file = controller
-                            //     .semi1assignmentList[index].file
-                            //     .split('/');
-                            // // print file name
-                            // print(file[file.length - 1]);
-                          },
-                          // leadung image
-                          leading: Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                image: const DecorationImage(
-                                    image: AssetImage(file),
-                                    fit: BoxFit.cover)),
-                          ),
-
-                          title: Text("Attachment"),
-                          // subtitle: const Text('Uploaded on 2021-05-05'),
+                                        if (response.isTapConfirmButton) {
+                                          controller.editNewsFeed(
+                                            id: news.id.toString(),
+                                            title: news.title,
+                                            description: news.description,
+                                            imageFile: news.image,
+                                            docFile: news.file,
+                                            videoFile: news.video,
+                                            audioFile: '',
+                                          );
+                                        }
+                                      },
+                                      icon: Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      )),
+                              // subtitle: const Text('Uploaded on 2021-05-05'),
+                            ),
+                          ],
                         ),
                       )
               ],

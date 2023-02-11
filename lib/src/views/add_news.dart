@@ -148,7 +148,7 @@ class AddNewsScreen extends GetView<AddINewsController> {
               ],
             ),
             FxSpacing.height(20),
-            Obx(() => controller.notesFile.value == ""
+            Obx(() => controller.docFile.value == ""
                 ? Container()
                 : Container(
                     decoration: BoxDecoration(
@@ -165,34 +165,32 @@ class AddNewsScreen extends GetView<AddINewsController> {
                       leading: Image(
                         image: AssetImage(
                             // check file type and show icon
-
-                            controller.notesFile.value.contains('.pdf')
+                            controller.docFile.value.contains('.pdf')
                                 ? pdf
-                                : controller.notesFile.value.contains('.doc')
+                                : controller.docFile.value.contains('.doc')
                                     ? word
-                                    : controller.notesFile.value
-                                            .contains('.docx')
+                                    : controller.docFile.value.contains('.docx')
                                         ? word
-                                        : controller.notesFile.value
+                                        : controller.docFile.value
                                                 .contains('.ppt')
                                             ? ppt
-                                            : controller.notesFile.value
+                                            : controller.docFile.value
                                                     .contains('.pptx')
                                                 ? ppt
-                                                : controller.notesFile.value
+                                                : controller.docFile.value
                                                         .contains('.xls')
                                                     ? excel
-                                                    : controller.notesFile.value
+                                                    : controller.docFile.value
                                                             .contains('.xlsx')
                                                         ? excel
                                                         : controller
-                                                                .notesFile.value
+                                                                .docFile.value
                                                                 .contains(
                                                                     '.txt')
                                                             ? file
                                                             : file),
                       ),
-                      title: Text(controller.notesFile.value.split('/').last),
+                      title: Text(controller.docFile.value.split('/').last),
                       subtitle: Text(
                         '${controller.fileSize.value} MB',
                       ),
@@ -214,13 +212,136 @@ class AddNewsScreen extends GetView<AddINewsController> {
                 ),
                 onPressed: () {
                   // pick file here
-                  controller.pickFile();
+                  controller.pickFile('file');
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     Icon(Icons.link),
                     Text(' Attach Document'),
+                  ],
+                ),
+              ),
+            ),
+            FxSpacing.height(10),
+            Obx(() => controller.videoFile.value == ""
+                ? Container()
+                : Container(
+                    decoration: BoxDecoration(
+                        color: Colors.green.withAlpha(30),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: 0,
+                              blurRadius: 1,
+                              offset: const Offset(0, 0))
+                        ]),
+                    child: ListTile(
+                      leading: Image(
+                        image: AssetImage(
+                            // check file type and show icon
+                            controller.videoFile.value.contains('.mp4')
+                                ? video
+                                : controller.videoFile.value.contains('.avi')
+                                    ? video
+                                    : controller.videoFile.value
+                                            .contains('.mov')
+                                        ? video
+                                        : controller.videoFile.value
+                                                .contains('.mkv')
+                                            ? video
+                                            : file),
+                      ),
+                      title: Text(controller.videoFile.value.split('/').last),
+                      subtitle: Text(
+                        '${controller.videoFileSize.value} MB',
+                      ),
+                    ),
+                  )),
+            FxSpacing.height(10),
+            Container(
+              width: double.infinity,
+              height: 45,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary:
+                      controller.theme.colorScheme.primary.withOpacity(0.5),
+                  onPrimary: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+                onPressed: () {
+                  // pick file here
+                  controller.pickFile('video');
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.video_file),
+                    Text(' Attach Video'),
+                  ],
+                ),
+              ),
+            ),
+            FxSpacing.height(10),
+            Obx(() => controller.audioFile.value == ""
+                ? Container()
+                : Container(
+                    decoration: BoxDecoration(
+                        color: Colors.green.withAlpha(30),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: 0,
+                              blurRadius: 1,
+                              offset: const Offset(0, 0))
+                        ]),
+                    child: ListTile(
+                      leading: Image(
+                        image: AssetImage(
+                            // check file type and show icon
+                            controller.audioFile.value.contains('.mp3')
+                                ? video
+                                : controller.audioFile.value.contains('.aac')
+                                    ? video
+                                    : controller.audioFile.value
+                                            .contains('.wav')
+                                        ? video
+                                        : file),
+                      ),
+                      title: Text(controller.audioFile.value.split('/').last),
+                      subtitle: Text(
+                        '${controller.audioFileSize.value} MB',
+                      ),
+                    ),
+                  )),
+            FxSpacing.height(10),
+            Container(
+              width: double.infinity,
+              height: 45,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary:
+                      controller.theme.colorScheme.primary.withOpacity(0.5),
+                  onPrimary: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+                onPressed: () {
+                  // pick file here
+                  controller.pickFile('audio');
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.audio_file),
+                    Text(' Attach Audio'),
                   ],
                 ),
               ),
