@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class CoversatationModel {
   CoversatationModel({
     required this.id,
@@ -31,23 +33,26 @@ class CoversatationModel {
   int? readStatus;
   String firebaseToken;
 
-  factory CoversatationModel.fromMap(Map<String, dynamic> json) =>
-      CoversatationModel(
-        id: json["id"],
-        senderId: json["sender_id"],
-        receiverId: json["receiver_id"],
-        lastMessageTime: DateTime.parse(json["last_message_time"]),
-        status: json["status"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        receiverName: json["receiver_name"],
-        totalUnread: json["totalUnread"],
-        lastMessage: json["last_message"],
-        lastMsgReceiverId: json["lastMsgReceiverId"],
-        receiverProfile: json["receiver_profile"],
-        readStatus: json["readStatus"],
-        firebaseToken: json["firebaseToken"],
-      );
+  factory CoversatationModel.fromMap(Map<String, dynamic> json) {
+    log(json["receiver_profile"].toString());
+
+    return CoversatationModel(
+      id: json["id"],
+      senderId: json["sender_id"],
+      receiverId: json["receiver_id"],
+      lastMessageTime: DateTime.parse(json["last_message_time"]),
+      status: json["status"],
+      createdAt: DateTime.parse(json["created_at"]),
+      updatedAt: DateTime.parse(json["updated_at"]),
+      receiverName: json["receiver_name"],
+      totalUnread: json["totalUnread"],
+      lastMessage: json["last_message"],
+      lastMsgReceiverId: json["lastMsgReceiverId"],
+      receiverProfile: json["receiver_profile"],
+      readStatus: json["readStatus"],
+      firebaseToken: json["firebaseToken"],
+    );
+  }
 
   Map<String, dynamic> toMap() => {
         "id": id,

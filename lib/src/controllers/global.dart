@@ -40,6 +40,8 @@ class Global {
   static var downloadPort = ReceivePort();
   static var broadcastStream = downloadPort.asBroadcastStream();
 
+  static var profileuRl = ''.obs;
+
   static Stream<List<dynamic>> fetchSinglesms(var myId, var receiverId) async* {
     while (true) {
       await Future.delayed(Duration(milliseconds: 500));
@@ -127,7 +129,7 @@ class Global {
       firebaseAuth.signOut();
       await firebaseAuth.signInWithEmailAndPassword(
           email: emailAddress, password: password);
-      log("userId");
+
       saveFirebaseToken();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

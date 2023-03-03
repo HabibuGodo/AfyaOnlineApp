@@ -1,8 +1,11 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutkit/loading_effect.dart';
 import 'package:flutkit/src/controllers/chats/chat_controller.dart';
+import 'package:flutkit/src/controllers/global.dart';
 import 'package:flutkit/src/models/user_model.dart';
+import 'package:flutkit/src/services/base_service.dart';
 import 'package:flutkit/theme/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -29,6 +32,7 @@ class UserListScreen extends GetView<ChatController> {
         Get.toNamed('/single_chat', arguments: {
           'otherUserId': user.id,
           'receiverName': user.name,
+          'receiverProfile': user.profileImage,
           'checkRoute': "single"
         });
       },
@@ -37,7 +41,37 @@ class UserListScreen extends GetView<ChatController> {
       borderRadiusAll: Constant.containerRadius.medium,
       child: Row(
         children: [
-          Icon(FeatherIcons.user),
+          Center(
+            child: Container(
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: CachedNetworkImage(
+                    imageUrl: imageURL + user.profileImage.toString(),
+                    imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                    errorWidget: (context, url, error) =>
+                        Icon(FeatherIcons.user),
+                    placeholder: (context, url) =>
+                        //local git
+                        Image.asset(
+                          "assets/images/profile/loading.gif",
+                          fit: BoxFit.cover,
+                          scale: 1,
+                        )),
+              ),
+            ),
+          ),
           FxSpacing.width(16),
           Expanded(
             child: Column(

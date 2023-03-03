@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutkit/src/services/base_service.dart';
 import 'package:flutkit/src/services/local_storage.dart';
 import 'package:flutx/flutx.dart';
 import 'package:flutkit/loading_effect.dart';
@@ -46,7 +48,36 @@ class SingleChatScreen extends GetView<AllInsideChatController> {
               title: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(FeatherIcons.user),
+                  Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: CachedNetworkImage(
+                          imageUrl:
+                              imageURL + controller.receiverProfile.toString(),
+                          imageBuilder: (context, imageProvider) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                          errorWidget: (context, url, error) =>
+                              Icon(FeatherIcons.user),
+                          placeholder: (context, url) =>
+                              //local git
+                              Image.asset(
+                                "assets/images/profile/loading.gif",
+                                fit: BoxFit.cover,
+                                scale: 1,
+                              )),
+                    ),
+                  ),
                   SizedBox(
                     width: 10,
                   ),

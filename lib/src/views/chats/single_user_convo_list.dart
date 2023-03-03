@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutkit/src/controllers/chats/chat_controller.dart';
 import 'package:flutkit/src/controllers/global.dart';
+import 'package:flutkit/src/services/base_service.dart';
 import 'package:flutkit/theme/constant.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
@@ -76,6 +78,9 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
                           'receiverName': controller
                               .allConvo[index].receiverName
                               .toString(),
+                          'receiverProfile': controller
+                              .allConvo[index].receiverProfile
+                              .toString(),
                           'firebaseToken':
                               controller.allConvo[index].firebaseToken,
                           'checkRoute': "single"
@@ -84,7 +89,39 @@ class SingleUserConvoListScreen extends GetView<ChatController> {
                       child: Column(
                         children: [
                           ListTile(
-                              leading: Icon(FeatherIcons.user),
+                              leading: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: CachedNetworkImage(
+                                      imageUrl: imageURL +
+                                          controller
+                                              .allConvo[index].receiverProfile
+                                              .toString(),
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.fill,
+                                              ),
+                                            ),
+                                          ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(FeatherIcons.user),
+                                      placeholder: (context, url) =>
+                                          //local git
+                                          Image.asset(
+                                            "assets/images/profile/loading.gif",
+                                            fit: BoxFit.cover,
+                                            scale: 1,
+                                          )),
+                                ),
+                              ),
                               title: FxText.bodyMedium(
                                 controller.allConvo[index].receiverName
                                     .toString(),

@@ -87,6 +87,8 @@ class LoginOTPController extends GetxController {
 
         final jsonResponse = convert.jsonDecode(response.body);
 
+        log(jsonResponse.toString());
+
         if (response.body.contains("success")) {
           Get.snackbar('Success', 'OTP verified successfully',
               backgroundColor: Colors.green, colorText: Colors.white);
@@ -99,6 +101,8 @@ class LoginOTPController extends GetxController {
           authData.write('mrn', jsonResponse['user']['mrn']);
           authData.write(
               'profile_image', jsonResponse['user']['profile_image']);
+
+          Global.profileuRl.value = jsonResponse['user']['profile_image'];
 
           if (jsonResponse['user']['firebaseToken'] == null) {
             Global.saveFirebaseToken();

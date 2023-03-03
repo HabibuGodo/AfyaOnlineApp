@@ -1,4 +1,5 @@
 import 'package:flutkit/src/controllers/download_controller.dart';
+import 'package:flutkit/src/controllers/profile_controller.dart';
 import 'package:get/get.dart';
 
 import '../controllers/add_newsfeed_controller.dart';
@@ -32,6 +33,10 @@ class InsideBindings extends Bindings {
     );
     Get.lazyPut<AddINewsController>(
       () => AddINewsController(),
+    );
+
+    Get.lazyPut<ProfileController>(
+      () => ProfileController(),
     );
   }
 }

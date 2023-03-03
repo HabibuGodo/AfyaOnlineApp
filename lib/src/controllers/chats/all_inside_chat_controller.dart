@@ -28,6 +28,7 @@ class AllInsideChatController extends GetxController {
   late var receiverId;
   late var groupName;
   late var receiverName;
+  late var receiverProfile;
   late var checkRoute;
   late var firebaseToken;
   late var groupTokens;
@@ -45,6 +46,7 @@ class AllInsideChatController extends GetxController {
     if (checkRoute == 'single') {
       receiverId = Get.arguments['otherUserId'];
       receiverName = Get.arguments['receiverName'];
+      receiverProfile = Get.arguments['receiverProfile'];
       firebaseToken = Get.arguments['firebaseToken'];
       filterSingleChatMessage(receiverId);
     } else {

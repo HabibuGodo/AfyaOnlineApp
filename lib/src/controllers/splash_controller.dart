@@ -17,6 +17,8 @@ class SplashController extends GetxController {
       if (authData.read('isLogged') == true) {
         var emailAddress = authData.read('email');
         Global.verifyUser(emailAddress, emailAddress);
+        log(authData.read('profile_image').toString());
+        Global.profileuRl.value = authData.read('profile_image');
         Get.offAndToNamed('/home');
       } else {
         // if (pageBox.read('viwedOnboard') == true) {
